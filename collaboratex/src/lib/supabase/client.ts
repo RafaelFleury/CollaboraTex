@@ -16,6 +16,18 @@ const cookieName = `sb-${projectId}-auth-token`;
 console.log('[Supabase Client] Inicializando cliente com URL:', supabaseUrl);
 console.log('[Supabase Client] Usando cookie:', cookieName);
 
+// Função para registrar os cookies atuais
+const logCookies = () => {
+  if (typeof window !== 'undefined') {
+    console.log('[Supabase Client] Cookies atuais:', document.cookie);
+  }
+};
+
+// Log dos cookies iniciais
+if (typeof window !== 'undefined') {
+  logCookies();
+}
+
 // Initialize the Supabase client with environment variables
 export const supabase = createBrowserClient(
   supabaseUrl || '',
@@ -65,12 +77,30 @@ interface SessionResponse {
   }
 }
 
+// Tipo para eventos de autenticação
+type AuthChangeEvent = 
+  | 'INITIAL_SESSION'
+  | 'SIGNED_IN'
+  | 'SIGNED_OUT'
+  | 'TOKEN_REFRESHED'
+  | 'USER_UPDATED'
+  | 'PASSWORD_RECOVERY';
+
 // Verificar estado inicial da autenticação
 supabase.auth.getSession().then((response: SessionResponse) => {
   console.log('[Supabase Client] Sessão inicial:', response.data.session ? 'Ativa' : 'Inativa');
   if (response.data.session) {
     console.log('[Supabase Client] Usuário logado:', response.data.session.user.email);
   }
+  
+  // Log dos cookies após verificar a sessão
+  logCookies();
+});
+
+// Adiciona observador para mudanças na sessão
+supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: SupabaseSession | null) => {
+  console.log(`[Supabase Client] Evento de autenticação: ${event}`);
+  logCookies();
 });
 
 // Export a function to get an authenticated client

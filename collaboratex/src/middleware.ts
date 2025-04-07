@@ -6,13 +6,27 @@ export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
   try {
+    // Log da requisição
+    console.log(`[Middleware] Verificando rota: ${pathname}`);
+    
+    // Extrair o ID do projeto do URL do Supabase para o nome do cookie
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const projectId = supabaseUrl ? supabaseUrl.split('.')[0].split('//')[1] : '';
+    const cookieName = `sb-${projectId}-auth-token`;
+    
     // Log de cookies existentes
-    console.log('[Middleware] Cookies existentes:', 
-      Array.from(req.cookies.getAll()).map(c => `${c.name}=${c.value.substring(0, 20)}...`));
+    const cookies = Array.from(req.cookies.getAll());
+    console.log('[Middleware] Todos os cookies:', 
+      cookies.map(c => `${c.name}`).join(', '));
+    
+    // Verificar especificamente o cookie de autenticação
+    const authCookie = req.cookies.get(cookieName);
+    console.log(`[Middleware] Cookie de auth (${cookieName}):`, 
+      authCookie ? 'Presente' : 'Ausente');
     
     // Create a Supabase client configured to use cookies
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      supabaseUrl,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
@@ -22,7 +36,7 @@ export async function middleware(req: NextRequest) {
             return cookie?.value;
           },
           set(name: string, value: string, options: { expires?: Date; maxAge?: number; domain?: string; path?: string; sameSite?: 'strict' | 'lax' | 'none'; secure?: boolean }) {
-            console.log(`[Middleware] Cookie set: ${name} = ${value.substring(0, 20)}...`);
+            console.log(`[Middleware] Cookie set: ${name}`);
             res.cookies.set({
               name,
               value,
@@ -40,19 +54,31 @@ export async function middleware(req: NextRequest) {
         },
       }
     );
-
-    // Refresh session using getUser() - recomendado pela documentação
+    
+    // Primeiro, verificar se há uma sessão
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError) {
+      console.error('[Middleware] Erro ao verificar sessão:', sessionError.message);
+    }
+    
+    // Em seguida, obter o usuário atual
     const { data: { user }, error } = await supabase.auth.getUser();
     
     if (error) {
       console.error('[Middleware] Erro ao verificar usuário:', error.message);
     }
     
-    console.log('[Middleware] Verificando sessão para:', pathname, '| Email:', user?.email ?? 'Nenhuma sessão');
+    console.log(
+      '[Middleware] Status da sessão:',
+      sessionData?.session ? 'Presente' : 'Ausente',
+      '| Usuário:',
+      user?.email ?? 'Não autenticado'
+    );
     
     // Log de cookies após a verificação
-    console.log('[Middleware] Cookies após auth.getUser:', 
-      Array.from(res.cookies.getAll()).map(c => `${c.name}=${c.value.substring(0, 20)}...`));
+    console.log('[Middleware] Cookies definidos na resposta:', 
+      Array.from(res.cookies.getAll()).map(c => `${c.name}`).join(', '));
 
     // Protected routes that require authentication
     const protectedRoutes = ['/dashboard', '/profile', '/editor'];

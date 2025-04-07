@@ -6,9 +6,29 @@ import DocumentCard, { DocumentData } from './DocumentCard';
 interface DocumentsGridProps {
   documents: DocumentData[];
   onNewDocument: () => void;
+  isLoading?: boolean;
 }
 
-export default function DocumentsGrid({ documents, onNewDocument }: DocumentsGridProps) {
+export default function DocumentsGrid({ 
+  documents, 
+  onNewDocument,
+  isLoading = false 
+}: DocumentsGridProps) {
+  // Estado de carregamento
+  if (isLoading) {
+    return (
+      <div className="rounded-lg bg-white p-8 text-center shadow-md dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <div className="flex justify-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+        </div>
+        <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+          Carregando seus documentos...
+        </p>
+      </div>
+    );
+  }
+
+  // Estado vazio - sem documentos
   if (documents.length === 0) {
     return (
       <div className="rounded-lg bg-white p-8 text-center shadow-md dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
@@ -32,6 +52,7 @@ export default function DocumentsGrid({ documents, onNewDocument }: DocumentsGri
     );
   }
 
+  // Estado com documentos
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {documents.map((doc) => (
