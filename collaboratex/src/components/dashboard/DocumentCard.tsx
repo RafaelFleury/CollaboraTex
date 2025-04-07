@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { CalendarIcon, ArrowRightIcon, Trash2Icon, XIcon, AlertTriangleIcon, MoreVerticalIcon, UsersIcon } from 'lucide-react';
+import { CalendarIcon, ArrowRightIcon, Trash2Icon, XIcon, AlertTriangleIcon, MoreVerticalIcon, UsersIcon, PencilIcon } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -17,14 +17,33 @@ export interface DocumentData {
 interface DocumentCardProps {
   document: DocumentData;
   onDelete?: (id: string) => Promise<{ success: boolean; error?: string }>;
+  onEditTitle?: (id: string, newTitle: string) => Promise<{ success: boolean; error?: string }>;
   listMode?: boolean;
 }
 
-export default function DocumentCard({ document, onDelete, listMode = false }: DocumentCardProps) {
+export default function DocumentCard({ document, onDelete, onEditTitle, listMode = false }: DocumentCardProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
+  
+  // Estados para o modal de edição de título
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [newTitle, setNewTitle] = useState(document.title);
+  const [editError, setEditError] = useState<string | null>(null);
+  
+  // Debug para verificar props
+  useEffect(() => {
+    if (showMenu) {
+      console.log(
+        "DocumentCard Menu Debug", 
+        listMode ? "List Mode" : "Grid Mode", 
+        "- onDelete:", Boolean(onDelete), 
+        "onEditTitle:", Boolean(onEditTitle)
+      );
+    }
+  }, [showMenu, onDelete, onEditTitle, listMode]);
 
   // Formatar a data de edição de forma mais amigável
   const formattedDate = formatDistanceToNow(new Date(document.updated_at), {
@@ -75,6 +94,61 @@ export default function DocumentCard({ document, onDelete, listMode = false }: D
       setIsDeleting(false);
     }
   };
+  
+  // Handlers para o modal de edição de título
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowMenu(false);
+    setNewTitle(document.title);
+    setEditError(null);
+    setShowEditModal(true);
+  };
+  
+  const handleCancelEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowEditModal(false);
+    setEditError(null);
+  };
+  
+  const handleConfirmEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!onEditTitle) return;
+    
+    // Validar título antes de atualizar
+    if (!newTitle.trim()) {
+      setEditError("O título não pode estar vazio.");
+      return;
+    }
+    
+    // Se o título não mudou, apenas fechar o modal
+    if (newTitle.trim() === document.title) {
+      setShowEditModal(false);
+      return;
+    }
+    
+    setIsEditingTitle(true);
+    setEditError(null);
+    
+    try {
+      const result = await onEditTitle(document.id, newTitle.trim());
+      
+      if (!result.success && result.error) {
+        setEditError(result.error);
+        setIsEditingTitle(false);
+      } else {
+        // Fechar o modal após a atualização bem-sucedida
+        setShowEditModal(false);
+        setIsEditingTitle(false);
+      }
+    } catch (err) {
+      setEditError(err instanceof Error ? err.message : 'Erro ao atualizar título');
+      setIsEditingTitle(false);
+    }
+  };
 
   const closeMenu = () => {
     setShowMenu(false);
@@ -114,7 +188,7 @@ export default function DocumentCard({ document, onDelete, listMode = false }: D
             </span>
           </Link>
           
-          {onDelete && (
+          {(onDelete || onEditTitle) && (
             <div className="relative px-3 border-l border-gray-200 dark:border-gray-700 flex items-center">
               <button 
                 onClick={handleMenuToggle}
@@ -124,30 +198,45 @@ export default function DocumentCard({ document, onDelete, listMode = false }: D
                 <MoreVerticalIcon className="h-4 w-4" />
               </button>
               
-              {/* Menu dropdown - A posição absoluta precisa de um pai relativo. O pai px-3 agora é relativo */}
+              {/* Menu dropdown */}
               {showMenu && (
                 <>
                   <div 
                     className="fixed inset-0 z-10"
                     onClick={closeMenu}
                   />
-                  {/* Adicionado right-0 para alinhar à direita do botão */}
                   <div className="absolute right-0 top-full mt-1 mr-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-800 dark:ring-gray-700 z-20">
                     <div className="py-1">
                       <Link 
                         href={`/editor?id=${document.id}`}
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                        onClick={closeMenu}
                       >
                         <ArrowRightIcon className="mr-2 h-4 w-4" />
                         Abrir editor
                       </Link>
-                      <button 
-                        onClick={handleDeleteClick}
-                        className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
-                      >
-                        <Trash2Icon className="mr-2 h-4 w-4" />
-                        Excluir documento
-                      </button>
+                      
+                      {/* Opção de editar título */}
+                      {onEditTitle && (
+                        <button 
+                          onClick={handleEditClick}
+                          className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                        >
+                          <PencilIcon className="mr-2 h-4 w-4" />
+                          Editar título
+                        </button>
+                      )}
+                      
+                      {/* Opção de excluir */}
+                      {onDelete && (
+                        <button 
+                          onClick={handleDeleteClick}
+                          className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                        >
+                          <Trash2Icon className="mr-2 h-4 w-4" />
+                          Excluir documento
+                        </button>
+                      )}
                     </div>
                   </div>
                 </>
@@ -212,6 +301,73 @@ export default function DocumentCard({ document, onDelete, listMode = false }: D
             </div>
           </div>
         )}
+        
+        {/* Modal de edição de título */}
+        {showEditModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={handleCancelEdit}>
+            <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800" onClick={e => e.stopPropagation()}>
+              <button
+                onClick={handleCancelEdit}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
+              >
+                <XIcon className="h-5 w-5" />
+              </button>
+              
+              <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                Editar Título do Documento
+              </h3>
+              
+              <form onSubmit={handleConfirmEdit}>
+                <div className="mb-4">
+                  <label htmlFor="documentTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Novo título
+                  </label>
+                  <input
+                    type="text"
+                    id="documentTitle"
+                    name="documentTitle"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    disabled={isEditingTitle}
+                  />
+                </div>
+                
+                {editError && (
+                  <div className="mb-4 rounded-md bg-red-50 p-3 dark:bg-red-900/20">
+                    <p className="text-sm text-red-700 dark:text-red-300">{editError}</p>
+                  </div>
+                )}
+                
+                <div className="flex justify-end space-x-3">
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    disabled={isEditingTitle}
+                    className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-50"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isEditingTitle || !newTitle.trim() || newTitle.trim() === document.title}
+                    className="rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors dark:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50 flex items-center"
+                  >
+                    {isEditingTitle ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Salvando...
+                      </>
+                    ) : "Salvar"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -219,14 +375,14 @@ export default function DocumentCard({ document, onDelete, listMode = false }: D
   // Renderização no modo grid (padrão)
   return (
     <div className="relative group h-full">
-      <div className="h-full flex flex-col rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-200 dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="h-full flex flex-col rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-200 dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 border border-gray-200 dark:border-gray-700">
         {/* Cabeçalho do card com título e menu */}
         <div className="flex justify-between items-start p-3 border-b border-gray-100 dark:border-gray-700">
           <h3 className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
             {document.title}
           </h3>
           
-          {onDelete && (
+          {(onDelete || onEditTitle) && (
             <div className="relative">
               <button 
                 onClick={handleMenuToggle}
@@ -248,10 +404,24 @@ export default function DocumentCard({ document, onDelete, listMode = false }: D
                       <Link 
                         href={`/editor?id=${document.id}`}
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                        onClick={closeMenu}
                       >
                         <ArrowRightIcon className="mr-2 h-4 w-4" />
                         Abrir editor
                       </Link>
+                      
+                      {/* Opção de editar título */}
+                      {onEditTitle && (
+                        <button 
+                          onClick={handleEditClick}
+                          className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                        >
+                          <PencilIcon className="mr-2 h-4 w-4" />
+                          Editar título
+                        </button>
+                      )}
+                      
+                      {/* Opção de excluir - Adicionando condição para grid mode */}
                       <button 
                         onClick={handleDeleteClick}
                         className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
@@ -351,6 +521,73 @@ export default function DocumentCard({ document, onDelete, listMode = false }: D
                 ) : "Excluir"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal de edição de título */}
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={handleCancelEdit}>
+          <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800" onClick={e => e.stopPropagation()}>
+            <button
+              onClick={handleCancelEdit}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
+            >
+              <XIcon className="h-5 w-5" />
+            </button>
+            
+            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-white">
+              Editar Título do Documento
+            </h3>
+            
+            <form onSubmit={handleConfirmEdit}>
+              <div className="mb-4">
+                <label htmlFor="documentTitleGrid" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Novo título
+                </label>
+                <input
+                  type="text"
+                  id="documentTitleGrid"
+                  name="documentTitle"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  disabled={isEditingTitle}
+                />
+              </div>
+              
+              {editError && (
+                <div className="mb-4 rounded-md bg-red-50 p-3 dark:bg-red-900/20">
+                  <p className="text-sm text-red-700 dark:text-red-300">{editError}</p>
+                </div>
+              )}
+              
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  disabled={isEditingTitle}
+                  className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isEditingTitle || !newTitle.trim() || newTitle.trim() === document.title}
+                  className="rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors dark:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50 flex items-center"
+                >
+                  {isEditingTitle ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Salvando...
+                    </>
+                  ) : "Salvar"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

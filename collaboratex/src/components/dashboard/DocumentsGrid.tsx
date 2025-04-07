@@ -9,6 +9,7 @@ interface DocumentsGridProps {
   documents: DocumentData[];
   onNewDocument: () => void;
   onDeleteDocument?: (id: string) => Promise<{ success: boolean; error?: string }>;
+  onEditDocumentTitle?: (id: string, newTitle: string) => Promise<{ success: boolean; error?: string }>;
   isLoading?: boolean;
   viewMode?: ViewMode;
 }
@@ -17,6 +18,7 @@ export default function DocumentsGrid({
   documents, 
   onNewDocument,
   onDeleteDocument,
+  onEditDocumentTitle,
   isLoading = false,
   viewMode = 'grid'
 }: DocumentsGridProps) {
@@ -67,6 +69,7 @@ export default function DocumentsGrid({
           key={doc.id} 
           document={doc} 
           onDelete={onDeleteDocument}
+          onEditTitle={onEditDocumentTitle}
         />
       ))}
     </div>
@@ -78,6 +81,7 @@ export default function DocumentsGrid({
           key={doc.id} 
           document={doc} 
           onDelete={onDeleteDocument}
+          onEditTitle={onEditDocumentTitle}
           listMode
         />
       ))}

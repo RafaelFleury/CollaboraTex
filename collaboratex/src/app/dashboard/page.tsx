@@ -9,6 +9,7 @@ import DocumentsGrid from '@/components/dashboard/DocumentsGrid';
 import CreateDocumentForm from '@/components/dashboard/CreateDocumentForm';
 import { DocumentData } from '@/components/dashboard/DocumentCard';
 import { useDocumentsList } from '@/hooks/useDocumentsList';
+import { supabase } from '@/lib/supabase/client';
 
 // Definir o tipo do modo de visualização
 type ViewMode = 'grid' | 'list';
@@ -16,7 +17,14 @@ type ViewMode = 'grid' | 'list';
 export default function DashboardPage() {
   const { user, loading: authLoading, isLoggedIn, signOut } = useAuth();
   const router = useRouter();
-  const { documents, isLoading: docsLoading, error, createDocument, deleteDocument } = useDocumentsList();
+  const { 
+    documents, 
+    isLoading: docsLoading, 
+    error, 
+    createDocument, 
+    deleteDocument, 
+    fetchDocuments 
+  } = useDocumentsList();
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [authRedirectAttempted, setAuthRedirectAttempted] = useState(false);
   // Estado para controlar o modo de visualização
@@ -55,6 +63,66 @@ export default function DashboardPage() {
       return { success: false, error: 'Usuário não autenticado' };
     }
     return await deleteDocument(id);
+  };
+  
+  // Manipulador para editar o título de um documento
+  const handleEditDocumentTitle = async (id: string, newTitle: string) => {
+    if (!isLoggedIn || !user) {
+      return { success: false, error: 'Usuário não autenticado' };
+    }
+    
+    try {
+      // Verificar a sessão atual
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        throw new Error(sessionError.message);
+      }
+      
+      if (!sessionData.session) {
+        throw new Error('Sessão de autenticação não encontrada');
+      }
+      
+      // Verificar se o usuário é o dono do documento
+      const { data: docCheck, error: docCheckError } = await supabase
+        .from('documents')
+        .select('owner_id')
+        .eq('id', id)
+        .single();
+      
+      if (docCheckError) {
+        throw new Error(docCheckError.message);
+      }
+      
+      if (!docCheck) {
+        throw new Error('Documento não encontrado');
+      }
+      
+      if (docCheck.owner_id !== user.id) {
+        throw new Error('Você não tem permissão para editar este documento');
+      }
+      
+      // Atualizar o título do documento
+      const { error: updateError } = await supabase
+        .from('documents')
+        .update({ title: newTitle, updated_at: new Date().toISOString() })
+        .eq('id', id);
+      
+      if (updateError) {
+        throw new Error(updateError.message);
+      }
+      
+      // Recarregar a lista de documentos
+      await fetchDocuments();
+      
+      return { success: true };
+    } catch (err) {
+      console.error('Erro ao editar título do documento:', err);
+      return { 
+        success: false, 
+        error: err instanceof Error ? err.message : 'Erro ao editar título do documento' 
+      };
+    }
   };
 
   // Alternar entre modos de visualização
@@ -198,6 +266,7 @@ export default function DashboardPage() {
           documents={formattedDocuments}
           onNewDocument={() => setIsCreatingNew(true)}
           onDeleteDocument={handleDeleteDocument}
+          onEditDocumentTitle={handleEditDocumentTitle}
           isLoading={docsLoading}
           viewMode={viewMode}
         />
