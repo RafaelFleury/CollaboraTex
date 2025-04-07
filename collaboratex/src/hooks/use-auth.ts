@@ -94,6 +94,42 @@ export function useAuth() {
     }
   };
 
+  // Sign in with Google
+  const signInWithGoogle = async () => {
+    try {
+      console.log('[useAuth signInWithGoogle] Iniciando login com Google');
+      
+      // Log dos cookies antes do login
+      const cookiesBefore = document.cookie;
+      console.log('[useAuth signInWithGoogle] Cookies antes do login:', cookiesBefore);
+      
+      // Redirecionar para o fluxo de autenticação do Google
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      });
+
+      if (error) {
+        console.error('[useAuth signInWithGoogle] Erro ao iniciar autenticação com Google:', error.message);
+        throw error;
+      }
+
+      // Se chegou aqui, o redirecionamento para o Google está sendo feito
+      console.log('[useAuth signInWithGoogle] Redirecionando para autenticação do Google:', data?.url);
+      return { success: true };
+      
+    } catch (error: any) {
+      console.error('[useAuth signInWithGoogle] Erro catch:', error.message);
+      return { success: false, error: error.message };
+    }
+  };
+
   // Sign up with email and password
   const signUp = async (email: string, password: string) => {
     try {
@@ -165,6 +201,7 @@ export function useAuth() {
     user,
     loading,
     signIn,
+    signInWithGoogle,
     signUp,
     signOut,
     isLoggedIn,

@@ -1,4 +1,4 @@
-# PRD: Editor Colaborativo de LaTeX Online ("CollaboraTeX" - Nome Provisório)
+# PRD: Editor Colaborativo de LaTeX Online ("CollaboraTeX")
 
 ## 1. Visão Geral
 
@@ -6,18 +6,18 @@ Este documento descreve os requisitos para o "CollaboraTeX", uma aplicação web
 
 **Problema:** Plataformas existentes como o Overleaf limitam o número de colaboradores em seus planos gratuitos. Isso cria uma barreira para estudantes, pesquisadores e pequenas equipes que precisam colaborar em documentos LaTeX sem incorrer em custos.
 
-**Solução Proposta:** Uma aplicação web que permite a múltiplos usuários registrados editar o mesmo documento `.tex` simultaneamente, com uma visualização do PDF compilado quase em tempo real. A aplicação utilizará Next.js para o frontend, Supabase para backend (autenticação, banco de dados) e um serviço Dockerizado separado para a compilação segura de LaTeX. Um requisito chave é permitir que os usuários copiem facilmente o código fonte LaTeX para colar em outras plataformas como o Overleaf, garantindo compatibilidade básica.
+**Solução Proposta:** Uma aplicação web que permite a múltiplos usuários registrados editar o mesmo documento `.tex` simultaneamente, com uma visualização do PDF compilado quase em tempo real. A aplicação utiliza Next.js para o frontend, Supabase para backend (autenticação, banco de dados) e um serviço Dockerizado separado para a compilação segura de LaTeX. Um requisito chave é permitir que os usuários copiem facilmente o código fonte LaTeX para colar em outras plataformas como o Overleaf, garantindo compatibilidade básica.
 
 **Público Alvo:** Estudantes, pesquisadores, pequenas equipes e qualquer pessoa que precise de uma ferramenta de colaboração LaTeX gratuita e simples.
 
 ## 2. Objetivos (Goals)
 
-* [ ] Fornecer uma plataforma gratuita para edição colaborativa de documentos LaTeX.
+* [x] Fornecer uma plataforma gratuita para edição colaborativa de documentos LaTeX.
 * [ ] Permitir edição simultânea do mesmo arquivo `.tex` por múltiplos usuários.
 * [ ] Exibir uma pré-visualização do PDF compilado que atualiza rapidamente após a compilação.
 * [ ] Facilitar a portabilidade do código fonte LaTeX (copiar/colar) para outras plataformas (ex: Overleaf).
-* [ ] Implementar um sistema seguro de contas de usuário e gerenciamento de documentos/permissões.
-* [ ] Utilizar uma stack tecnológica moderna e escalável (Next.js, Supabase, Docker).
+* [x] Implementar um sistema seguro de contas de usuário e gerenciamento de documentos/permissões.
+* [x] Utilizar uma stack tecnológica moderna e escalável (Next.js, Supabase, Docker).
 
 ## 3. Não-Objetivos (Non-Goals)
 
@@ -36,24 +36,24 @@ Este documento descreve os requisitos para o "CollaboraTeX", uma aplicação web
 
 ### 5.1. Autenticação e Gerenciamento de Usuários (Supabase)
 
-* [ ] **RF01:** Permitir que novos usuários se registrem usando Email e Senha.
-* [ ] **RF02:** Permitir que usuários existentes façam login com Email e Senha.
+* [x] **RF01:** Permitir que novos usuários se registrem usando Email e Senha.
+* [x] **RF02:** Permitir que usuários existentes façam login com Email e Senha.
 * [ ] **RF03:** Permitir que usuários façam login/registro usando conta Google (OAuth).
-* [ ] **RF04:** Permitir que usuários façam logout da aplicação.
-* [ ] **RF05:** Manter a sessão do usuário ativa (lembrar login).
+* [x] **RF04:** Permitir que usuários façam logout da aplicação.
+* [x] **RF05:** Manter a sessão do usuário ativa (lembrar login).
 * [ ] **RF06:** (Opcional v1) Funcionalidade de "Esqueci minha senha".
 
 ### 5.2. Gerenciamento de Documentos (Supabase + Next.js)
 
 * [ ] **RF07:** Permitir que usuários criem novos documentos/projetos LaTeX (inicialmente, pode ser um único arquivo `.tex` por projeto).
-* [ ] **RF08:** Listar os documentos que pertencem ao usuário logado em um dashboard.
+* [~] **RF08:** Listar os documentos que pertencem ao usuário logado em um dashboard.
 * [ ] **RF09:** Permitir renomear um documento.
 * [ ] **RF10:** Permitir excluir um documento (com confirmação).
 * [ ] **RF11:** Permitir que o dono de um documento o compartilhe com outros usuários registrados (por email).
 * [ ] **RF12:** Definir permissão de "Edição" ao compartilhar (inicialmente, todos compartilhados podem editar).
 * [ ] **RF13:** Listar documentos compartilhados com o usuário no dashboard.
 
-### 5.3. Edição de LaTeX (Next.js + CodeMirror/Monaco)
+### 5.3. Edição de LaTeX (Next.js + Monaco)
 
 * [ ] **RF14:** Apresentar uma área de edição de texto rica para código LaTeX.
 * [ ] **RF15:** Implementar Syntax Highlighting (coloração de sintaxe) para LaTeX.
@@ -72,7 +72,7 @@ Este documento descreve os requisitos para o "CollaboraTeX", uma aplicação web
 * [ ] **RF25:** Permitir upload de arquivos adicionais (`.png`, `.jpg`, `.bib`) associados ao projeto e armazená-los no Supabase Storage.
 * [ ] **RF26:** Durante a compilação, rodar automaticamente `bibtex` se o projeto possuir um arquivo `.bib`, garantindo suporte a bibliografias.
 
-### 5.5. Colaboração em Tempo Real (Next.js + Supabase/WebSockets + Yjs/ShareDB)
+### 5.5. Colaboração em Tempo Real (Next.js + Supabase/WebSockets + Yjs)
 
 * [ ] **RF27:** Permitir que múltiplos usuários (com permissão) abram o mesmo documento simultaneamente.
 * [ ] **RF28:** Modificações feitas por um usuário no editor de `.tex` devem ser refletidas nas telas dos outros colaboradores em tempo real (ou quase).
@@ -97,136 +97,79 @@ Este documento descreve os requisitos para o "CollaboraTeX", uma aplicação web
   * **Comunicação segura**: Usar HTTPS em toda a comunicação cliente-servidor.
   * Documentação detalhada sobre a implementação de segurança em `docs/docker_security.md`.
 
-* [ ] **RNF02 (Usabilidade):** A interface deve ser limpa, intuitiva e seguir padrões conhecidos de editores online (layout de dois painéis).
+* [x] **RNF02 (Usabilidade):** A interface deve ser limpa, intuitiva e seguir padrões conhecidos de editores online (layout de dois painéis).
 * [ ] **RNF03 (Desempenho):** A edição colaborativa deve ser fluida. A compilação de documentos simples/médios deve ocorrer em poucos segundos. O carregamento inicial da aplicação deve ser rápido.
 * [ ] **RNF04 (Confiabilidade):** O sistema deve salvar o trabalho do usuário de forma confiável. A sincronização em tempo real deve minimizar a chance de conflitos ou perda de dados.
 * [ ] **RNF05 (Escalabilidade):** A arquitetura (especialmente o serviço de compilação) deve ser pensada para permitir escalar horizontalmente se necessário (rodar múltiplas instâncias do container Docker).
 
-## 7. Design e UX (Considerações Iniciais)
+## 7. Design e UX
 
-* Layout principal com editor de código à esquerda e visualizador de PDF à direita.
-* Barra de ferramentas superior com ações: Salvar (se manual), Compilar, Compartilhar, Copiar Fonte.
-* Página separada para dashboard de gerenciamento de documentos.
-* Feedback visual claro sobre o estado da compilação (em andamento, sucesso, erro).
+* [x] Layout moderno e responsivo usando Tailwind CSS
+* [x] Tema claro/escuro com alternância automática
+* [x] Dashboard intuitivo para gerenciamento de documentos
+* [ ] Layout principal com editor de código à esquerda e visualizador de PDF à direita
+* [ ] Barra de ferramentas superior com ações: Salvar, Compilar, Compartilhar, Copiar Fonte
+* [ ] Feedback visual claro sobre o estado da compilação (em andamento, sucesso, erro)
 
-## 8. Critérios de Lançamento (MVP - Minimum Viable Product)
+## 8. Status Atual do Projeto
 
-* [ ] Funcionalidades de RF01 a RF04 implementadas e testadas.
-* [ ] Funcionalidades de RF07 a RF10 implementadas e testadas.
-* [ ] Funcionalidades de RF11 e RF12 (compartilhamento básico) implementadas.
-* [ ] Funcionalidades de RF14 a RF17 implementadas (edição básica).
-* [ ] Funcionalidades de RF19 a RF24 implementadas (compilação manual e visualização/erro).
-* [ ] Funcionalidades de RF27 a RF29 implementadas (colaboração em tempo real no texto).
-* [ ] Requisitos NNF01 (Segurança básica via Docker e RLS) e NNF02 (Usabilidade mínima) atendidos.
+### Implementado (Fase 1 - Concluída):
+* [x] **Sistema de Autenticação**: Registro, login e logout usando Supabase
+* [~] **Gerenciamento de Usuários**: Sessão persistente, autenticação por email/senha e OAuth
+* [x] **Interface Principal**: Dashboard, navegação responsiva, tema claro/escuro
+* [~] **Criação de Documentos**: Formulário para criar novos documentos
+* [x] **Estrutura Modular**: Componentes React organizados e reutilizáveis
 
-## 9. Considerações Futuras
+### Em Desenvolvimento (Fase 2):
+* [ ] **Editor LaTeX**: Implementação do Monaco Editor com syntax highlighting
+* [ ] **Salvamento de Documentos**: Persistência de dados no Supabase
 
-* Histórico de versões e capacidade de reverter alterações.
-* Suporte a projetos com múltiplos arquivos (`.tex`, `.cls`, imagens, etc.).
-* Templates de documentos.
-* Chat integrado para colaboradores.
-* Suporte a outros compiladores (XeLaTeX, LuaLaTeX).
-* Melhorias na gestão de erros de compilação.
-* Integração Git (opcional).
+### Próximas Etapas:
+* [ ] **Compilação LaTeX**: Serviço Docker seguro para compilação de LaTeX em PDF
+* [ ] **Visualização de PDF**: Exibição do PDF compilado
+* [ ] **Colaboração em Tempo Real**: Edição simultânea usando Yjs
 
-## 10. Questões Abertas
+## 9. Roadmap Atualizado
 
-* Qual biblioteca de colaboração usar (Yjs, ShareDB, outra)? -> Yjs
-* Detalhes exatos do fluxo de compartilhamento e permissões.
-* Estratégia de deploy para o serviço Dockerizado e a aplicação Next.js:
-  * Opções a considerar:
-    * Deploy do serviço de compilação em servidor distinto da aplicação principal
-    * Utilização de serviços gerenciados de contêiner (ECS, Cloud Run, etc.)
-    * Implementação de funcionalidade de scale-to-zero para otimizar custos
-* Quais pacotes TeX Live incluir na imagem Docker base (texlive-small com extensões relevantes vs. personalizada)?
-* Estratégia de atualizações de segurança para o container de compilação
+### 🔹 Fase 1: Fundamentos (Autenticação + Dashboard) - ✅ CONCLUÍDO
+- [x] Setup do projeto (Next.js + Tailwind + Supabase SDK)
+- [x] RF01 a RF05: Autenticação (Email/Senha + Google OAuth)
+- [x] Estrutura de navegação e layout principal
+- [x] RF07 a RF08: Criação de documentos e dashboard
 
-
-# 📅 Roadmap de Implementação — CollaboraTeX (MVP)
-
-Este roadmap define a ordem recomendada de implementação para o MVP do CollaboraTeX, baseado na complexidade e nos módulos descritos no PRD.
-
----
-
-## 🔹 Fase 1: Fundamentos (Autenticação + Dashboard)
-
-**Objetivo:** Criar a estrutura principal de usuários e documentos.
-
-- [ ] Setup do projeto (Next.js + Tailwind + Supabase SDK)
-- [ ] RF01 a RF05: Autenticação (Email/Senha + Google OAuth)
-- [ ] Estrutura de navegação e layout principal
-- [ ] RF07 a RF10: CRUD básico de documentos no dashboard
-
----
-
-## 🔹 Fase 2: Edição de Texto (.tex)
-
-**Objetivo:** Permitir que o usuário edite documentos LaTeX com salvamento.
-
-- [ ] Integração do editor CodeMirror (ou Monaco)
+### 🔹 Fase 2: Edição de Texto (.tex) - 🔄 EM PROGRESSO
+- [ ] Integração do Monaco Editor
 - [ ] Configuração de syntax highlighting para LaTeX
 - [ ] RF14 a RF17: Editor funcional com salvamento no Supabase
 
----
+### 🔹 Fase 3: Gerenciamento de Documentos - ⏳ PENDENTE
+- [ ] RF09 a RF10: Renomear e excluir documentos
+- [ ] RF11 a RF13: Compartilhamento e permissões
 
-## 🔹 Fase 3: Compilação LaTeX
+### 🔹 Fase 4: Compilação LaTeX - ⏳ PENDENTE
+- [ ] Implementar arquitetura de compilação segura com Docker
+- [ ] API para comunicação com o serviço de compilação
+- [ ] RF19 a RF24: Interface para compilação e visualização de PDF
 
-**Objetivo:** Transformar o `.tex` em PDF visualizável com máxima segurança.
+### 🔹 Fase 5: Colaboração em Tempo Real - ⏳ PENDENTE
+- [ ] Integração do Yjs com Monaco Editor
+- [ ] RF27 a RF29: Sincronização em tempo real
 
-- [ ] Implementar arquitetura de compilação segura:
-  - [ ] Criar imagem Docker minimalista com TeX Live e dependências essenciais
-  - [ ] Configurar limites de recursos (CPU, memória, tempo, armazenamento)
-  - [ ] Implementar isolamento completo (user namespaces, sem acesso à rede)
-  - [ ] Configurar pdflatex com opções de segurança (no-shell-escape)
-  - [ ] Implementar validação de entrada e sanitização de saída
-  - [ ] Desenvolver sistema de contenção e monitoramento
-- [ ] Desenvolver API RESTful para comunicação segura com o serviço de compilação
-- [ ] Implementar endpoints no Next.js para submissão e recuperação de compilações
-- [ ] RF19 a RF24: Interface de usuário para compilação e visualização de PDF
-- [ ] Sistema de filas para gerenciar requisições de compilação em paralelo
-
-Mais detalhes sobre a implementação segura do Docker podem ser encontrados em `docs/docker_security.md`.
-
----
-
-## 🔹 Fase 4: Compartilhamento de Documentos
-
-**Objetivo:** Permitir colaboração básica entre usuários registrados.
-
-- [ ] RF11 a RF13: Compartilhar documento por email
-- [ ] Permissões básicas de edição
-
----
-
-## 🔹 Fase 5: Colaboração em Tempo Real
-
-**Objetivo:** Edição simultânea fluida entre múltiplos usuários.
-
-- [ ] Integração do Yjs com CodeMirror ou Monaco
-- [ ] RF27 a RF29: Sincronização em tempo real do conteúdo do editor
-
----
-
-## 🔹 Fase 6: Funcionalidades Complementares do MVP
-
-**Objetivo:** Finalizar as funções principais restantes.
-
+### 🔹 Fase 6: Funcionalidades Complementares - ⏳ PENDENTE
 - [ ] RF18: Botão "Copiar Fonte"
-- [ ] RF25 e RF26: Upload de arquivos adicionais e compilação com `bibtex`
+- [ ] RF25 e RF26: Upload de arquivos adicionais
 - [ ] RF31 a RF33: Acesso anônimo via link compartilhável
 
----
+### 🔹 Fase 7: Otimização e Segurança - ⏳ PENDENTE
+- [ ] RNF01: Segurança da sandbox Docker e RLS no Supabase
+- [ ] RNF03 a RNF05: Otimizações de performance e escalabilidade
 
-## 🔹 Fase 7: Requisitos Não-Funcionais (RNF)
+## 10. Considerações Futuras
 
-**Objetivo:** Segurança, performance e polish final.
-
-- [ ] RNF01: Configurar RLS no Supabase + segurança da sandbox Docker
-- [ ] RNF02: UX clean e responsivo
-- [ ] RNF03 a RNF05: Otimizações de performance, confiabilidade e escalabilidade
-
----
-
-## ✅ Observação Final
-
-Cada fase deve resultar em um produto funcional testável. A implementação incremental permite testes com usuários reais desde as fases iniciais.
+* Histórico de versões e capacidade de reverter alterações
+* Suporte a projetos com múltiplos arquivos (`.tex`, `.cls`, imagens, etc.)
+* Templates de documentos
+* Chat integrado para colaboradores
+* Suporte a outros compiladores (XeLaTeX, LuaLaTeX)
+* Melhorias na gestão de erros de compilação
+* Integração Git (opcional)
