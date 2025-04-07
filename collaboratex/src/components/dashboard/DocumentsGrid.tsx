@@ -3,18 +3,22 @@
 import { PlusIcon, FilePlusIcon } from 'lucide-react';
 import DocumentCard, { DocumentData } from './DocumentCard';
 
+type ViewMode = 'grid' | 'list';
+
 interface DocumentsGridProps {
   documents: DocumentData[];
   onNewDocument: () => void;
   onDeleteDocument?: (id: string) => Promise<{ success: boolean; error?: string }>;
   isLoading?: boolean;
+  viewMode?: ViewMode;
 }
 
 export default function DocumentsGrid({ 
   documents, 
   onNewDocument,
   onDeleteDocument,
-  isLoading = false 
+  isLoading = false,
+  viewMode = 'grid'
 }: DocumentsGridProps) {
   // Estado de carregamento
   if (isLoading) {
@@ -54,14 +58,27 @@ export default function DocumentsGrid({
     );
   }
 
-  // Estado com documentos
-  return (
+  // Estado com documentos - renderizar como grid ou lista baseado no viewMode
+  return viewMode === 'grid' ? (
+    // Visualização em grid
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {documents.map((doc) => (
         <DocumentCard 
           key={doc.id} 
           document={doc} 
           onDelete={onDeleteDocument}
+        />
+      ))}
+    </div>
+  ) : (
+    // Visualização em lista
+    <div className="flex flex-col space-y-3">
+      {documents.map((doc) => (
+        <DocumentCard 
+          key={doc.id} 
+          document={doc} 
+          onDelete={onDeleteDocument}
+          listMode
         />
       ))}
     </div>

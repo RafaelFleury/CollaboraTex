@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
-import { PlusIcon, AlertCircleIcon } from 'lucide-react';
+import { PlusIcon, AlertCircleIcon, GridIcon, ListIcon } from 'lucide-react';
 import DocumentsGrid from '@/components/dashboard/DocumentsGrid';
 import CreateDocumentForm from '@/components/dashboard/CreateDocumentForm';
 import { DocumentData } from '@/components/dashboard/DocumentCard';
 import { useDocumentsList } from '@/hooks/useDocumentsList';
+
+// Definir o tipo do modo de visualização
+type ViewMode = 'grid' | 'list';
 
 export default function DashboardPage() {
   const { user, loading: authLoading, isLoggedIn, signOut } = useAuth();
@@ -16,6 +19,8 @@ export default function DashboardPage() {
   const { documents, isLoading: docsLoading, error, createDocument, deleteDocument } = useDocumentsList();
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [authRedirectAttempted, setAuthRedirectAttempted] = useState(false);
+  // Estado para controlar o modo de visualização
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -50,6 +55,11 @@ export default function DashboardPage() {
       return { success: false, error: 'Usuário não autenticado' };
     }
     return await deleteDocument(id);
+  };
+
+  // Alternar entre modos de visualização
+  const toggleViewMode = (mode: ViewMode) => {
+    setViewMode(mode);
   };
 
   // Se a autenticação ainda está carregando, mostramos um spinner
@@ -122,13 +132,38 @@ export default function DashboardPage() {
               Gerencie seus documentos LaTeX e colaborações
             </p>
           </div>
-          <button
-            onClick={() => setIsCreatingNew(true)}
-            className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors dark:bg-blue-700 dark:hover:bg-blue-800"
-          >
-            <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
-            Novo Documento
-          </button>
+          <div className="flex items-center space-x-3">
+            {/* Botões de alternância para o modo de visualização */}
+            <div className="mr-2 bg-gray-100 rounded-lg p-1 dark:bg-gray-700 flex items-center">
+              <button
+                onClick={() => toggleViewMode('grid')}
+                className={`p-1.5 rounded ${viewMode === 'grid' 
+                  ? 'bg-white text-blue-600 shadow-sm dark:bg-gray-600 dark:text-blue-400' 
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
+                aria-label="Visualização em grid"
+                title="Visualização em grid"
+              >
+                <GridIcon className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => toggleViewMode('list')}
+                className={`p-1.5 rounded ${viewMode === 'list' 
+                  ? 'bg-white text-blue-600 shadow-sm dark:bg-gray-600 dark:text-blue-400' 
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
+                aria-label="Visualização em lista"
+                title="Visualização em lista"
+              >
+                <ListIcon className="h-5 w-5" />
+              </button>
+            </div>
+            <button
+              onClick={() => setIsCreatingNew(true)}
+              className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors dark:bg-blue-700 dark:hover:bg-blue-800"
+            >
+              <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
+              Novo Documento
+            </button>
+          </div>
         </div>
 
         {error && (
@@ -164,6 +199,7 @@ export default function DashboardPage() {
           onNewDocument={() => setIsCreatingNew(true)}
           onDeleteDocument={handleDeleteDocument}
           isLoading={docsLoading}
+          viewMode={viewMode}
         />
       </main>
     </div>
