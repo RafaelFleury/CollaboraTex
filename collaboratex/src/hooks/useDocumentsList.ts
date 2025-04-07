@@ -147,12 +147,76 @@ export function useDocumentsList() {
       };
     }
   };
+
+  // Função para deletar um documento
+  const deleteDocument = async (documentId: string) => {
+    // Não tente deletar um documento se não estivermos logados
+    if (!isLoggedIn || !user) {
+      return { 
+        success: false, 
+        error: 'Usuário não autenticado' 
+      };
+    }
+    
+    try {
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        throw new Error(sessionError.message);
+      }
+      
+      if (!sessionData.session) {
+        throw new Error('Sessão de autenticação não encontrada');
+      }
+      
+      // Verificar se o usuário é o dono do documento
+      const { data: docCheck, error: docCheckError } = await supabase
+        .from('documents')
+        .select('owner_id')
+        .eq('id', documentId)
+        .single();
+      
+      if (docCheckError) {
+        throw new Error(docCheckError.message);
+      }
+      
+      if (!docCheck) {
+        throw new Error('Documento não encontrado');
+      }
+      
+      if (docCheck.owner_id !== user.id) {
+        throw new Error('Você não tem permissão para excluir este documento');
+      }
+      
+      // Deletar o documento
+      const { error: deleteError } = await supabase
+        .from('documents')
+        .delete()
+        .eq('id', documentId);
+      
+      if (deleteError) {
+        throw new Error(deleteError.message);
+      }
+      
+      // Atualizar a lista após excluir
+      await fetchDocuments();
+      
+      return { success: true };
+    } catch (err) {
+      console.error('Erro ao deletar documento:', err);
+      return { 
+        success: false, 
+        error: err instanceof Error ? err.message : 'Erro ao deletar documento' 
+      };
+    }
+  };
   
   return {
     documents,
     isLoading,
     error,
     fetchDocuments,
-    createDocument
+    createDocument,
+    deleteDocument
   };
 } 

@@ -6,12 +6,14 @@ import DocumentCard, { DocumentData } from './DocumentCard';
 interface DocumentsGridProps {
   documents: DocumentData[];
   onNewDocument: () => void;
+  onDeleteDocument?: (id: string) => Promise<{ success: boolean; error?: string }>;
   isLoading?: boolean;
 }
 
 export default function DocumentsGrid({ 
   documents, 
   onNewDocument,
+  onDeleteDocument,
   isLoading = false 
 }: DocumentsGridProps) {
   // Estado de carregamento
@@ -56,7 +58,11 @@ export default function DocumentsGrid({
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {documents.map((doc) => (
-        <DocumentCard key={doc.id} document={doc} />
+        <DocumentCard 
+          key={doc.id} 
+          document={doc} 
+          onDelete={onDeleteDocument}
+        />
       ))}
     </div>
   );

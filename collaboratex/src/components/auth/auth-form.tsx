@@ -3,32 +3,42 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, registerSchema, AuthFormValues } from '@/lib/schemas/auth';
 
 type AuthFormProps = {
   type: 'login' | 'register';
 };
 
 export default function AuthForm({ type }: AuthFormProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const { signIn, signUp, signInWithGoogle } = useAuth();
+  
+  // Usando react-hook-form com validação zod
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AuthFormValues>({
+    resolver: zodResolver(type === 'login' ? loginSchema : registerSchema),
+    mode: 'onBlur', // Valida quando o campo perde o foco
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: AuthFormValues) => {
     setError(null);
     setLoading(true);
 
     try {
       if (type === 'login') {
-        const { success, error } = await signIn(email, password);
+        const { success, error } = await signIn(data.email, data.password);
         if (!success && error) {
           setError(error);
         }
       } else {
-        const { success, error } = await signUp(email, password);
+        const { success, error } = await signUp(data.email, data.password);
         if (!success && error) {
           setError(error);
         }
@@ -58,7 +68,7 @@ export default function AuthForm({ type }: AuthFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {error && (
         <div className="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
           <div className="flex">
@@ -81,38 +91,56 @@ export default function AuthForm({ type }: AuthFormProps) {
         <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           E-mail
         </label>
-        <div className="mt-1">
+        <div className="mt-1 relative">
           <input
             id="email"
-            name="email"
+            {...register('email')}
             type="email"
             autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+            className={`block w-full appearance-none rounded-md border ${errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'} px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400`}
             placeholder="seu-email@exemplo.com"
           />
+          {errors.email && (
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              </svg>
+            </div>
+          )}
         </div>
+        {errors.email && (
+          <p className="mt-2 text-sm text-red-600 dark:text-red-400" id="email-error">
+            {errors.email.message}
+          </p>
+        )}
       </div>
 
       <div>
         <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Senha
         </label>
-        <div className="mt-1">
+        <div className="mt-1 relative">
           <input
             id="password"
-            name="password"
+            {...register('password')}
             type="password"
             autoComplete={type === 'login' ? 'current-password' : 'new-password'}
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+            className={`block w-full appearance-none rounded-md border ${errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'} px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400`}
             placeholder={type === 'login' ? '••••••••' : 'Crie uma senha forte'}
           />
+          {errors.password && (
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              </svg>
+            </div>
+          )}
         </div>
+        {errors.password && (
+          <p className="mt-2 text-sm text-red-600 dark:text-red-400" id="password-error">
+            {errors.password.message}
+          </p>
+        )}
         {type === 'login' && (
           <div className="mt-2 flex items-center justify-end">
             <div className="text-sm">

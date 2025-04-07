@@ -13,7 +13,7 @@ import { useDocumentsList } from '@/hooks/useDocumentsList';
 export default function DashboardPage() {
   const { user, loading: authLoading, isLoggedIn, signOut } = useAuth();
   const router = useRouter();
-  const { documents, isLoading: docsLoading, error, createDocument } = useDocumentsList();
+  const { documents, isLoading: docsLoading, error, createDocument, deleteDocument } = useDocumentsList();
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [authRedirectAttempted, setAuthRedirectAttempted] = useState(false);
 
@@ -42,6 +42,14 @@ export default function DashboardPage() {
       return { success: false, error: 'Usuário não autenticado' };
     }
     return await createDocument(title);
+  };
+  
+  // Manipulador para excluir um documento
+  const handleDeleteDocument = async (id: string) => {
+    if (!isLoggedIn) {
+      return { success: false, error: 'Usuário não autenticado' };
+    }
+    return await deleteDocument(id);
   };
 
   // Se a autenticação ainda está carregando, mostramos um spinner
@@ -154,6 +162,7 @@ export default function DashboardPage() {
         <DocumentsGrid 
           documents={formattedDocuments}
           onNewDocument={() => setIsCreatingNew(true)}
+          onDeleteDocument={handleDeleteDocument}
           isLoading={docsLoading}
         />
       </main>
