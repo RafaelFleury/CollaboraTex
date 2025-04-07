@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #1A202C;
+  --background: #F7FAFC;
+  --primary: #3B82F6;
+  --primary-hover: #2563EB;
+  --secondary: #E2E8F0;
+  --accent: #4299E1;
+  --muted: #718096;
+  --error: #E53E3E;
+  --success: #38A169;
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);
+  --card-shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%);
+}
+
+.dark {
+  --foreground: #F7FAFC;
+  --background: #1A202C;
+  --secondary: #2D3748;
+  --muted: #A0AEC0;
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 30%), 0 2px 4px -1px rgb(0 0 0 / 20%);
+  --card-shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 40%), 0 4px 6px -2px rgb(0 0 0 / 30%);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  ::selection {
+    background-color: #BFDBFE; /* bg-primary-200 */
+    color: #1E3A8A; /* text-primary-900 */
+  }
+  
+  .dark ::selection {
+    background-color: #1D4ED8; /* dark:bg-primary-800 */
+    color: #EFF6FF; /* dark:text-primary-100 */
+  }
+}
+
+@layer components {
+  /* Component styles (.btn, .card, .input, etc.) removed to avoid @apply issues. */
+
+  /* Apply utility classes directly in JSX instead. */
+}
+
+@layer utilities {
+  .animate-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .animate-scale {
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .animate-scale:hover {
+    transform: scale(1.02);
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
