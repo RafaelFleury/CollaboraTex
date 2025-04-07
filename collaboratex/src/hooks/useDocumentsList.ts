@@ -74,8 +74,8 @@ export function useDocumentsList() {
         updated_at: doc.updated_at,
         owner_id: doc.owner_id,
         is_public: doc.is_public,
-        // Como ainda não temos a contagem real, vamos simular aleatoriamente para teste
-        collaborators_count: Math.floor(Math.random() * 3)
+        // Definir como 0 até a funcionalidade de colaboração ser implementada
+        collaborators_count: 0
       }));
       
       setDocuments(formattedDocs);

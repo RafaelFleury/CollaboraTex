@@ -45,10 +45,12 @@ Este documento descreve os requisitos para o "CollaboraTeX", uma aplicação web
 
 ### 5.2. Gerenciamento de Documentos (Supabase + Next.js)
 
-* [ ] **RF07:** Permitir que usuários criem novos documentos/projetos LaTeX (inicialmente, pode ser um único arquivo `.tex` por projeto).
-* [~] **RF08:** Listar os documentos que pertencem ao usuário logado em um dashboard.
+* [x] **RF07:** Permitir que usuários criem novos documentos/projetos LaTeX (inicialmente, pode ser um único arquivo `.tex` por projeto).
+* [x] Inclui validação de título (comprimento, caracteres válidos).
+* [x] **RF08:** Listar os documentos que pertencem ao usuário logado em um dashboard.
+* [x] Opção de visualização em grid ou lista.
 * [ ] **RF09:** Permitir renomear um documento.
-* [ ] **RF10:** Permitir excluir um documento (com confirmação).
+* [x] **RF10:** Permitir excluir um documento (com confirmação).
 * [ ] **RF11:** Permitir que o dono de um documento o compartilhe com outros usuários registrados (por email).
 * [ ] **RF12:** Definir permissão de "Edição" ao compartilhar (inicialmente, todos compartilhados podem editar).
 * [ ] **RF13:** Listar documentos compartilhados com o usuário no dashboard.
@@ -95,9 +97,13 @@ Este documento descreve os requisitos para o "CollaboraTeX", uma aplicação web
   * **Containeres efêmeros**: Cada compilação deve ocorrer em uma instância isolada e descartável.
   * **Segurança de dados**: Implementar Row Level Security (RLS) no Supabase para garantir que usuários só acessem seus próprios dados/documentos permitidos.
   * **Comunicação segura**: Usar HTTPS em toda a comunicação cliente-servidor.
+  * **Validação de Entrada**: Validação robusta (com Zod) de todos os dados de entrada (formulários, API).
   * Documentação detalhada sobre a implementação de segurança em `docs/docker_security.md`.
 
-* [x] **RNF02 (Usabilidade):** A interface deve ser limpa, intuitiva e seguir padrões conhecidos de editores online (layout de dois painéis).
+* [x] **RNF02 (Usabilidade):** A interface deve ser limpa, intuitiva e seguir padrões conhecidos de editores online.
+* [x] Dashboard com visualização em grid/lista.
+* [x] Validações de formulário com feedback claro.
+* [x] Interface consistente e responsiva.
 * [ ] **RNF03 (Desempenho):** A edição colaborativa deve ser fluida. A compilação de documentos simples/médios deve ocorrer em poucos segundos. O carregamento inicial da aplicação deve ser rápido.
 * [ ] **RNF04 (Confiabilidade):** O sistema deve salvar o trabalho do usuário de forma confiável. A sincronização em tempo real deve minimizar a chance de conflitos ou perda de dados.
 * [ ] **RNF05 (Escalabilidade):** A arquitetura (especialmente o serviço de compilação) deve ser pensada para permitir escalar horizontalmente se necessário (rodar múltiplas instâncias do container Docker).
@@ -106,26 +112,35 @@ Este documento descreve os requisitos para o "CollaboraTeX", uma aplicação web
 
 * [x] Layout moderno e responsivo usando Tailwind CSS
 * [x] Tema claro/escuro com alternância automática
-* [x] Dashboard intuitivo para gerenciamento de documentos
+* [x] Dashboard intuitivo para gerenciamento de documentos com opções de visualização (grid/lista)
 * [ ] Layout principal com editor de código à esquerda e visualizador de PDF à direita
 * [ ] Barra de ferramentas superior com ações: Salvar, Compilar, Compartilhar, Copiar Fonte
 * [ ] Feedback visual claro sobre o estado da compilação (em andamento, sucesso, erro)
+* [x] Validações de formulário claras (auth, criação de documento)
+* [x] Menu de ações nos cards de documento
 
 ## 8. Status Atual do Projeto
 
-### Implementado (Fase 1 - Concluída):
-* [x] **Sistema de Autenticação**: Registro, login e logout usando Supabase
-* [~] **Gerenciamento de Usuários**: Sessão persistente, autenticação por email/senha e OAuth
+### Implementado:
+* [x] **Sistema de Autenticação**: Registro, login (com validação), logout, Google OAuth
+* [x] **Gerenciamento de Usuários**: Sessão persistente, autenticação por email/senha
 * [x] **Interface Principal**: Dashboard, navegação responsiva, tema claro/escuro
-* [~] **Criação de Documentos**: Formulário para criar novos documentos
+* [x] **Gerenciamento de Documentos (Dashboard)**: 
+    * [x] Criação de novos documentos (com validação de título)
+    * [x] Listagem de documentos (proprietário)
+    * [x] Exclusão de documentos (com confirmação)
+    * [x] Alternância entre visualização grid/lista
+    * [x] Cards de documento redesenhados com menu de opções
 * [x] **Estrutura Modular**: Componentes React organizados e reutilizáveis
 
-### Em Desenvolvimento (Fase 2):
+### Em Desenvolvimento:
 * [ ] **Editor LaTeX**: Implementação do Monaco Editor com syntax highlighting
-* [ ] **Salvamento de Documentos**: Persistência de dados no Supabase
+* [ ] **Salvamento de Documentos**: Persistência de dados no Supabase a partir do editor
 
 ### Próximas Etapas:
-* [ ] **Compilação LaTeX**: Serviço Docker seguro para compilação de LaTeX em PDF
+* [ ] **Renomear Documentos**: Implementar RF09
+* [ ] **Compartilhamento**: Implementar RF11-RF13
+* [ ] **Compilação LaTeX**: Serviço Docker seguro e API
 * [ ] **Visualização de PDF**: Exibição do PDF compilado
 * [ ] **Colaboração em Tempo Real**: Edição simultânea usando Yjs
 
@@ -133,34 +148,39 @@ Este documento descreve os requisitos para o "CollaboraTeX", uma aplicação web
 
 ### 🔹 Fase 1: Fundamentos (Autenticação + Dashboard) - ✅ CONCLUÍDO
 - [x] Setup do projeto (Next.js + Tailwind + Supabase SDK)
-- [x] RF01 a RF05: Autenticação (Email/Senha + Google OAuth)
+- [~] RF01 a RF05: Autenticação (Email/Senha + Google OAuth) + Validação
 - [x] Estrutura de navegação e layout principal
-- [x] RF07 a RF08: Criação de documentos e dashboard
+- [x] RF07, RF08, RF10: CRUD básico (Criar, Listar, Excluir) e Dashboard
 
-### 🔹 Fase 2: Edição de Texto (.tex) - 🔄 EM PROGRESSO
+### 🔹 Fase 2: Interface e Usabilidade do Dashboard - ✅ CONCLUÍDO
+- [x] Validação de formulário de criação de documento
+- [x] Redesenho dos cards de documento (menu de opções)
+- [x] Alternância de visualização grid/lista
+
+### 🔹 Fase 3: Edição de Texto (.tex) - 🔄 EM PROGRESSO
 - [ ] Integração do Monaco Editor
 - [ ] Configuração de syntax highlighting para LaTeX
 - [ ] RF14 a RF17: Editor funcional com salvamento no Supabase
 
-### 🔹 Fase 3: Gerenciamento de Documentos - ⏳ PENDENTE
-- [ ] RF09 a RF10: Renomear e excluir documentos
+### 🔹 Fase 4: Gerenciamento Avançado de Documentos - ⏳ PENDENTE
+- [ ] RF09: Renomear documentos
 - [ ] RF11 a RF13: Compartilhamento e permissões
 
-### 🔹 Fase 4: Compilação LaTeX - ⏳ PENDENTE
+### 🔹 Fase 5: Compilação LaTeX - ⏳ PENDENTE
 - [ ] Implementar arquitetura de compilação segura com Docker
 - [ ] API para comunicação com o serviço de compilação
 - [ ] RF19 a RF24: Interface para compilação e visualização de PDF
 
-### 🔹 Fase 5: Colaboração em Tempo Real - ⏳ PENDENTE
+### 🔹 Fase 6: Colaboração em Tempo Real - ⏳ PENDENTE
 - [ ] Integração do Yjs com Monaco Editor
 - [ ] RF27 a RF29: Sincronização em tempo real
 
-### 🔹 Fase 6: Funcionalidades Complementares - ⏳ PENDENTE
+### 🔹 Fase 7: Funcionalidades Complementares - ⏳ PENDENTE
 - [ ] RF18: Botão "Copiar Fonte"
 - [ ] RF25 e RF26: Upload de arquivos adicionais
 - [ ] RF31 a RF33: Acesso anônimo via link compartilhável
 
-### 🔹 Fase 7: Otimização e Segurança - ⏳ PENDENTE
+### 🔹 Fase 8: Otimização e Segurança - ⏳ PENDENTE
 - [ ] RNF01: Segurança da sandbox Docker e RLS no Supabase
 - [ ] RNF03 a RNF05: Otimizações de performance e escalabilidade
 
