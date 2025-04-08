@@ -60,7 +60,7 @@ export default function DocumentsGrid({
     );
   }
 
-  // Estado com documentos - renderizar como grid ou lista baseado no viewMode
+  // Documents state - render as grid or list based on viewMode
   return viewMode === 'grid' ? (
     // Grid view
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
