@@ -142,6 +142,46 @@ Detailed documentation is available in the `/docs` directory:
 - [Database Schema](docs/database_schema.md)
 - [Docker Security Architecture](docs/docker_security.md)
 
+## Project Structure
+
+Below is the directory structure of the CollaboraTex project:
+
+```
+.
+ |--- collaboratex                  # Main Next.js application
+ |---  |--- public                  # Static assets
+ |---  |--- src                     # Source code
+ |---  |---  |--- app               # Next.js app router pages
+ |---  |---  |---  |--- auth        # Authentication pages
+ |---  |---  |---  |--- dashboard   # User dashboard
+ |---  |---  |---  |--- editor      # LaTeX editor
+ |---  |---  |---  |--- privacy     # Privacy policy
+ |---  |---  |---  |--- profile     # User profile
+ |---  |---  |---  |--- terms       # Terms of service
+ |---  |---  |--- components        # React components
+ |---  |---  |---  |--- auth        # Authentication components
+ |---  |---  |---  |--- dashboard   # Dashboard components
+ |---  |---  |---  |--- editor      # Editor components
+ |---  |---  |---  |--- home        # Homepage components
+ |---  |---  |---  |--- layout      # Layout components
+ |---  |---  |---  |--- ui          # UI components
+ |---  |---  |--- hooks             # Custom React hooks
+ |---  |---  |--- lib               # Utility libraries
+ |---  |---  |---  |--- i18n        # Internationalization
+ |---  |---  |---  |--- schemas     # Validation schemas
+ |---  |---  |---  |--- supabase    # Supabase client setup
+ |---  |---  |--- types             # TypeScript type definitions
+ |--- docker                        # Docker configuration
+ |---  |--- latex-service           # LaTeX compilation service
+ |--- docs                          # Documentation files
+```
+
+You can generate this structure using the following command from the project root:
+
+```bash
+find . -not -path "*/node_modules/*" -not -path "*/\.*" -type d | sort | sed -e "s/[^-][^\/]*\// |--- /g" -e "s/|\([^ ]\)/| \1/"
+```
+
 ## Status
 
 This project is currently in development. See the roadmap for current progress.

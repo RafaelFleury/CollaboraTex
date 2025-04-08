@@ -48,6 +48,23 @@ module.exports = {
             },
           },
         },
+        dark: {
+          css: {
+            color: 'var(--slate-200)', // ou referência ao sistema de cores do Tailwind
+            a: {
+              color: 'var(--primary-400)', // usando variáveis de cores existentes
+              '&:hover': {
+                color: 'var(--primary-300)',
+              },
+            },
+            'h1, h2, h3, h4, h5, h6, strong, code, blockquote': {
+              color: '#f7fafc',
+            },
+            figcaption: {
+              color: '#94a3b8',
+            },
+          },
+        },
       },
     },
     container: {
