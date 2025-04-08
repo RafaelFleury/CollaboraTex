@@ -27,20 +27,20 @@ export const createServerSupabaseClient = (cookieGetter: {
       cookies: {
         get(name: string) {
           try {
-            // Usa o getter de cookies fornecido como parâmetro
+            // Uses the cookie getter provided as parameter
             return cookieGetter.get(name);
           } catch (error) {
-            console.error('[ServerClient] Erro ao ler cookie:', error);
+            console.error('[ServerClient] Error reading cookie:', error);
             return undefined;
           }
         },
         set() {
-          // Server Components não podem modificar cookies
-          console.warn('[ServerClient] Não é possível definir cookies em Server Components');
+          // Server Components cannot modify cookies
+          console.warn('[ServerClient] Cannot set cookies in Server Components');
         },
         remove() {
-          // Server Components não podem modificar cookies
-          console.warn('[ServerClient] Não é possível remover cookies em Server Components');
+          // Server Components cannot modify cookies
+          console.warn('[ServerClient] Cannot remove cookies in Server Components');
         },
       },
     }

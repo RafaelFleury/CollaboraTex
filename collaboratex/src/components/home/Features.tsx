@@ -3,7 +3,7 @@ export default function Features() {
     <section id="features" className="py-16 px-6 md:px-12 bg-white dark:bg-gray-900">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
-          Recursos incríveis para sua produtividade acadêmica
+          Amazing features for your academic productivity
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -15,10 +15,10 @@ export default function Features() {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              Colaboração em tempo real
+              Real-time collaboration
             </h3>
             <p className="text-gray-600 dark:text-gray-300">
-              Trabalhe simultaneamente com colegas em um único documento, visualizando as alterações enquanto elas acontecem.
+              Work simultaneously with colleagues on a single document, seeing changes as they happen.
             </p>
           </div>
           
@@ -30,10 +30,10 @@ export default function Features() {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              Visualização de PDF em tempo real
+              Real-time PDF preview
             </h3>
             <p className="text-gray-600 dark:text-gray-300">
-              Visualize o resultado final em PDF enquanto edita seu código LaTeX, com atualizações instantâneas.
+              View the final PDF result while editing your LaTeX code, with instant updates.
             </p>
           </div>
           
@@ -45,10 +45,10 @@ export default function Features() {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              Editor inteligente
+              Intelligent editor
             </h3>
             <p className="text-gray-600 dark:text-gray-300">
-              Complete código LaTeX automaticamente, detecte erros de sintaxe e obtenha sugestões inteligentes enquanto digita.
+              Autocomplete LaTeX code, detect syntax errors, and get intelligent suggestions as you type.
             </p>
           </div>
         </div>

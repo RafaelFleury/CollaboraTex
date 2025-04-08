@@ -11,23 +11,23 @@ export default function Footer() {
           <div className="flex flex-col space-y-4">
             <Logo />
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-              Plataforma colaborativa para edição de documentos LaTeX em tempo real.
+              Collaborative platform for real-time LaTeX document editing.
             </p>
           </div>
           
           <div>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white tracking-wider uppercase mb-4">
-              Produto
+              Product
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link href="/features" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 text-sm">
-                  Funcionalidades
+                  Features
                 </Link>
               </li>
               <li>
                 <Link href="/pricing" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 text-sm">
-                  Planos
+                  Pricing
                 </Link>
               </li>
               <li>
@@ -40,12 +40,12 @@ export default function Footer() {
           
           <div>
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white tracking-wider uppercase mb-4">
-              Suporte
+              Support
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link href="/docs" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 text-sm">
-                  Documentação
+                  Documentation
                 </Link>
               </li>
               <li>
@@ -55,7 +55,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/contact" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 text-sm">
-                  Contato
+                  Contact
                 </Link>
               </li>
             </ul>
@@ -68,12 +68,12 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link href="/privacy" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 text-sm">
-                  Privacidade
+                  Privacy
                 </Link>
               </li>
               <li>
                 <Link href="/terms" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 text-sm">
-                  Termos de Uso
+                  Terms of Use
                 </Link>
               </li>
             </ul>
@@ -82,7 +82,7 @@ export default function Footer() {
         
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-            &copy; {new Date().getFullYear()} CollaboraTex. Todos os direitos reservados.
+            &copy; {new Date().getFullYear()} CollaboraTex. All rights reserved.
           </p>
         </div>
       </div>

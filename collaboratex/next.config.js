@@ -13,7 +13,7 @@ const nextConfig = {
       },
     ],
   },
-  // Para configuração adicional de webpack se necessário
+  // For additional webpack configuration if needed
   webpack: (config, { isServer }) => {
     return config;
   },

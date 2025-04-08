@@ -12,14 +12,14 @@ export default function Footer() {
           </div>
           
           <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center text-sm text-gray-600 dark:text-gray-400">
-            <Link href="/terms" className="hover:text-blue-600 dark:hover:text-blue-400">Termos de Serviço</Link>
-            <Link href="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400">Política de Privacidade</Link>
+            <Link href="/terms" className="hover:text-blue-600 dark:hover:text-blue-400">Terms of Service</Link>
+            <Link href="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400">Privacy Policy</Link>
             <a href="https://github.com/yourusername/collaboratex" className="hover:text-blue-600 dark:hover:text-blue-400">GitHub</a>
           </div>
         </div>
         
         <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-500">
-          © {new Date().getFullYear()} CollaboraTex. Todos os direitos reservados.
+          © {new Date().getFullYear()} CollaboraTex. All rights reserved.
         </div>
       </div>
     </footer>

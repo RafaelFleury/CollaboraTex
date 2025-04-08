@@ -6,23 +6,23 @@ export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
   try {
-    // Log da requisição
-    console.log(`[Middleware] Verificando rota: ${pathname}`);
+    // Log the request
+    console.log(`[Middleware] Checking route: ${pathname}`);
     
-    // Extrair o ID do projeto do URL do Supabase para o nome do cookie
+    // Extract project ID from Supabase URL for cookie name
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const projectId = supabaseUrl ? supabaseUrl.split('.')[0].split('//')[1] : '';
     const cookieName = `sb-${projectId}-auth-token`;
     
-    // Log de cookies existentes
+    // Log existing cookies
     const cookies = Array.from(req.cookies.getAll());
-    console.log('[Middleware] Todos os cookies:', 
+    console.log('[Middleware] All cookies:', 
       cookies.map(c => `${c.name}`).join(', '));
     
-    // Verificar especificamente o cookie de autenticação
+    // Specifically check the authentication cookie
     const authCookie = req.cookies.get(cookieName);
-    console.log(`[Middleware] Cookie de auth (${cookieName}):`, 
-      authCookie ? 'Presente' : 'Ausente');
+    console.log(`[Middleware] Auth cookie (${cookieName}):`, 
+      authCookie ? 'Present' : 'Absent');
     
     // Create a Supabase client configured to use cookies
     const supabase = createServerClient(
@@ -32,7 +32,7 @@ export async function middleware(req: NextRequest) {
         cookies: {
           get(name: string) {
             const cookie = req.cookies.get(name);
-            console.log(`[Middleware] Cookie get: ${name} => ${cookie ? 'existe' : 'não existe'}`);
+            console.log(`[Middleware] Cookie get: ${name} => ${cookie ? 'exists' : 'does not exist'}`);
             return cookie?.value;
           },
           set(name: string, value: string, options: { expires?: Date; maxAge?: number; domain?: string; path?: string; sameSite?: 'strict' | 'lax' | 'none'; secure?: boolean }) {
@@ -41,7 +41,7 @@ export async function middleware(req: NextRequest) {
               name,
               value,
               ...options,
-              // Garantindo que estas opções estejam configuradas corretamente para desenvolvimento
+              // Ensuring these options are properly configured for development
               sameSite: 'lax',
               secure: process.env.NODE_ENV === 'production',
               path: '/',
@@ -55,29 +55,29 @@ export async function middleware(req: NextRequest) {
       }
     );
     
-    // Primeiro, verificar se há uma sessão
+    // First, check if there's a session
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
     
     if (sessionError) {
-      console.error('[Middleware] Erro ao verificar sessão:', sessionError.message);
+      console.error('[Middleware] Error checking session:', sessionError.message);
     }
     
-    // Em seguida, obter o usuário atual
+    // Then, get the current user
     const { data: { user }, error } = await supabase.auth.getUser();
     
     if (error) {
-      console.error('[Middleware] Erro ao verificar usuário:', error.message);
+      console.error('[Middleware] Error checking user:', error.message);
     }
     
     console.log(
-      '[Middleware] Status da sessão:',
-      sessionData?.session ? 'Presente' : 'Ausente',
-      '| Usuário:',
-      user?.email ?? 'Não autenticado'
+      '[Middleware] Session status:',
+      sessionData?.session ? 'Present' : 'Absent',
+      '| User:',
+      user?.email ?? 'Not authenticated'
     );
     
-    // Log de cookies após a verificação
-    console.log('[Middleware] Cookies definidos na resposta:', 
+    // Log cookies after verification
+    console.log('[Middleware] Cookies set in response:', 
       Array.from(res.cookies.getAll()).map(c => `${c.name}`).join(', '));
 
     // Protected routes that require authentication
@@ -90,7 +90,7 @@ export async function middleware(req: NextRequest) {
 
     // If accessing a protected route without being authenticated
     if (isProtectedRoute && !user) {
-      console.log(`[Middleware] Acesso negado a ${pathname}. Redirecionando para login.`);
+      console.log(`[Middleware] Access denied to ${pathname}. Redirecting to login.`);
       
       // Redirect to login page
       const redirectUrl = new URL('/auth/login', req.url);
@@ -100,13 +100,13 @@ export async function middleware(req: NextRequest) {
 
     // If already logged in and trying to access auth pages
     if (user && (pathname.startsWith('/auth/login') || pathname.startsWith('/auth/register'))) {
-      console.log(`[Middleware] Usuário logado em ${pathname}. Redirecionando para /dashboard.`);
+      console.log(`[Middleware] User logged in at ${pathname}. Redirecting to /dashboard.`);
       
       // Redirect to dashboard
       return NextResponse.redirect(new URL('/dashboard', req.url));
     }
   } catch (error) {
-    console.error('[Middleware] Erro:', error);
+    console.error('[Middleware] Error:', error);
   }
 
   // Make sure to return the response with the session cookie
@@ -116,14 +116,14 @@ export async function middleware(req: NextRequest) {
 // Apply middleware to specific routes
 export const config = {
   matcher: [
-    // Rotas protegidas
+    // Protected routes
     '/dashboard',
     '/dashboard/:path*',
     '/profile',
     '/profile/:path*',
     '/editor',
     '/editor/:path*',
-    // Rotas de autenticação
+    // Authentication routes
     '/auth/login',
     '/auth/register',
     '/auth/verification',

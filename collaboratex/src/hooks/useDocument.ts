@@ -22,20 +22,20 @@ export function useDocument(documentId?: string) {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const { user, isLoggedIn, loading: authLoading } = useAuth();
   
-  // Carregar documento do Supabase
+  // Load document from Supabase
   useEffect(() => {
     if (documentId && !authLoading && isLoggedIn) {
       fetchDocument(documentId);
     } else if (!authLoading && !isLoggedIn && documentId) {
-      setError('Usuário não autenticado');
+      setError('User not authenticated');
       setIsLoading(false);
     }
   }, [documentId, authLoading, isLoggedIn]);
   
-  // Função para buscar um documento pelo ID
+  // Function to fetch a document by ID
   const fetchDocument = async (id: string) => {
     if (!isLoggedIn || !user) {
-      setError('Usuário não autenticado');
+      setError('User not authenticated');
       return;
     }
     
@@ -43,7 +43,7 @@ export function useDocument(documentId?: string) {
     setError(null);
     
     try {
-      // Verificar a sessão atual
+      // Check current session
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
@@ -51,7 +51,7 @@ export function useDocument(documentId?: string) {
       }
       
       if (!sessionData.session) {
-        throw new Error('Sessão de autenticação não encontrada');
+        throw new Error('Authentication session not found');
       }
       
       const { data, error } = await supabase
@@ -65,12 +65,12 @@ export function useDocument(documentId?: string) {
       }
       
       if (data) {
-        // Verificar se o usuário tem acesso a este documento
+        // Check if user has access to this document
         if (data.owner_id !== user.id && !data.is_public) {
-          throw new Error('Você não tem permissão para acessar este documento');
+          throw new Error('You do not have permission to access this document');
         }
         
-        // Converte o conteúdo JSON para string se necessário
+        // Convert JSON content to string if necessary
         const documentData = {
           ...data,
           content: typeof data.content === 'string' 
@@ -80,20 +80,20 @@ export function useDocument(documentId?: string) {
         setDocument(documentData);
       } else {
         setDocument(null);
-        setError('Documento não encontrado');
+        setError('Document not found');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar documento');
-      console.error('Erro ao carregar documento:', err);
+      setError(err instanceof Error ? err.message : 'Error loading document');
+      console.error('Error loading document:', err);
     } finally {
       setIsLoading(false);
     }
   };
   
-  // Função para salvar um documento
+  // Function to save a document
   const saveDocument = async (documentData: DocumentData) => {
     if (!isLoggedIn || !user) {
-      setError('Usuário não autenticado');
+      setError('User not authenticated');
       return false;
     }
     
@@ -101,7 +101,7 @@ export function useDocument(documentId?: string) {
     setError(null);
     
     try {
-      // Verificar a sessão atual
+      // Check current session
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
@@ -109,14 +109,14 @@ export function useDocument(documentId?: string) {
       }
       
       if (!sessionData.session) {
-        throw new Error('Sessão de autenticação não encontrada');
+        throw new Error('Authentication session not found');
       }
       
       let response;
       
       if (documentData.id) {
-        // Atualizar documento existente
-        // Verificar se o usuário é o dono do documento
+        // Update existing document
+        // Check if user owns the document
         const { data: docCheck } = await supabase
           .from('documents')
           .select('owner_id')
@@ -124,7 +124,7 @@ export function useDocument(documentId?: string) {
           .single();
         
         if (docCheck && docCheck.owner_id !== user.id) {
-          throw new Error('Você não tem permissão para editar este documento');
+          throw new Error('You do not have permission to edit this document');
         }
         
         response = await supabase
@@ -137,7 +137,7 @@ export function useDocument(documentId?: string) {
           .eq('id', documentData.id)
           .select();
       } else {
-        // Criar novo documento
+        // Create new document
         response = await supabase
           .from('documents')
           .insert({
@@ -153,7 +153,7 @@ export function useDocument(documentId?: string) {
         throw new Error(response.error.message);
       }
       
-      // Atualizar o estado do documento
+      // Update document state
       if (response.data && response.data.length > 0) {
         const updatedDoc = {
           ...response.data[0],
@@ -167,18 +167,18 @@ export function useDocument(documentId?: string) {
       setLastSaved(new Date());
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao salvar documento');
-      console.error('Erro ao salvar documento:', err);
+      setError(err instanceof Error ? err.message : 'Error saving document');
+      console.error('Error saving document:', err);
       return false;
     } finally {
       setIsSaving(false);
     }
   };
   
-  // Função para criar um novo documento
+  // Function to create a new document
   const createDocument = async (title: string, initialContent: string = '') => {
     if (!isLoggedIn || !user) {
-      setError('Usuário não autenticado');
+      setError('User not authenticated');
       return null;
     }
     

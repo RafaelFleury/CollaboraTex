@@ -30,29 +30,29 @@ export default function Header({ showAuthButtons = true }: HeaderProps) {
   const handleSignOut = async () => {
     try {
       setIsLoggingOut(true);
-      console.log('[Header handleSignOut] Iniciando logout');
+      console.log('[Header handleSignOut] Starting logout');
       const { success } = await signOut();
       if (success) {
-        console.log('[Header handleSignOut] Logout bem-sucedido, redirecionando para home');
+        console.log('[Header handleSignOut] Logout successful, redirecting to home');
         router.push('/');
         router.refresh();
       } else {
-        console.error('[Header handleSignOut] Falha no logout');
+        console.error('[Header handleSignOut] Logout failed');
       }
     } catch (error: any) {
-      console.error('[Header handleSignOut] Erro:', error.message);
+      console.error('[Header handleSignOut] Error:', error.message);
     } finally {
       setIsLoggingOut(false);
     }
   };
 
   const navigateToDashboard = () => {
-    console.log('[Header navigateToDashboard] Navegando para dashboard');
+    console.log('[Header navigateToDashboard] Navigating to dashboard');
     router.push('/dashboard');
   };
 
   const navigateToProfile = () => {
-    console.log('[Header navigateToProfile] Navegando para perfil');
+    console.log('[Header navigateToProfile] Navigating to profile');
     router.push('/profile');
   };
 
@@ -75,19 +75,19 @@ export default function Header({ showAuthButtons = true }: HeaderProps) {
                 href="/features" 
                 className="text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors"
               >
-                Funcionalidades
+                Features
               </Link>
               <Link 
                 href="/pricing" 
                 className="text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors"
               >
-                Planos
+                Pricing
               </Link>
               <Link 
                 href="/docs" 
                 className="text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors"
               >
-                Documentação
+                Documentation
               </Link>
             </div>
           </div>
@@ -107,13 +107,13 @@ export default function Header({ showAuthButtons = true }: HeaderProps) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={navigateToDashboard}>
                         Dashboard
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={navigateToProfile}>
-                        Perfil
+                        Profile
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem 
@@ -121,7 +121,7 @@ export default function Header({ showAuthButtons = true }: HeaderProps) {
                         disabled={isLoggingOut}
                         className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                       >
-                        {isLoggingOut ? 'Saindo...' : 'Sair'}
+                        {isLoggingOut ? 'Logging out...' : 'Log out'}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -133,7 +133,7 @@ export default function Header({ showAuthButtons = true }: HeaderProps) {
                       asChild
                     >
                       <Link href="/auth/login">
-                        Entrar
+                        Log in
                       </Link>
                     </Button>
                     <Button
@@ -141,7 +141,7 @@ export default function Header({ showAuthButtons = true }: HeaderProps) {
                       asChild
                     >
                       <Link href="/auth/register">
-                        Cadastrar
+                        Sign up
                       </Link>
                     </Button>
                   </>

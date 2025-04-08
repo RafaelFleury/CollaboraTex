@@ -36,10 +36,10 @@ export default function ProfilePage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Perfil do Usuário</h1>
+      <h1 className="text-3xl font-bold mb-8">User Profile</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Informações Básicas */}
+        {/* Basic Information */}
         <Card className="p-6">
           <div className="flex flex-col items-center">
             <Avatar className="h-24 w-24 mb-4">
@@ -47,50 +47,50 @@ export default function ProfilePage() {
             </Avatar>
             <h2 className="text-xl font-semibold mb-2">{user.email}</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Membro desde {new Date(user.created_at).toLocaleDateString('pt-BR')}
+              Member since {new Date(user.created_at).toLocaleDateString()}
             </p>
           </div>
         </Card>
 
-        {/* Estatísticas */}
+        {/* Statistics */}
         <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Estatísticas</h2>
+          <h2 className="text-xl font-semibold mb-4">Statistics</h2>
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Documentos Criados</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Documents Created</p>
               <p className="text-2xl font-semibold">0</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Colaborações</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Collaborations</p>
               <p className="text-2xl font-semibold">0</p>
             </div>
           </div>
         </Card>
 
-        {/* Configurações */}
+        {/* Settings */}
         <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Configurações</h2>
+          <h2 className="text-xl font-semibold mb-4">Settings</h2>
           <div className="space-y-4">
             <Button
               variant="outline"
               className="w-full"
               onClick={() => router.push('/profile/settings')}
             >
-              Configurações da Conta
+              Account Settings
             </Button>
             <Button
               variant="outline"
               className="w-full"
               onClick={() => router.push('/profile/security')}
             >
-              Segurança
+              Security
             </Button>
             <Button
               variant="outline"
               className="w-full"
               onClick={() => router.push('/profile/notifications')}
             >
-              Notificações
+              Notifications
             </Button>
           </div>
         </Card>

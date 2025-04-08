@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { CalendarIcon, ArrowRightIcon, MoreVerticalIcon, UsersIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { enUS, ptBR } from 'date-fns/locale';
 import { DocumentData } from './types';
+import { t, defaultLanguage } from '@/lib/i18n';
 
 interface DocumentCardListProps {
   document: DocumentData;
@@ -27,10 +28,11 @@ export default function DocumentCardList({
   onDelete,
   onEditTitle
 }: DocumentCardListProps) {
-  // Formatar a data de edição
+  // Format the edit date
+  const locale = defaultLanguage.startsWith('pt') ? ptBR : enUS;
   const formattedDate = formatDistanceToNow(new Date(document.updated_at), {
     addSuffix: true,
-    locale: ptBR
+    locale: locale
   });
 
   return (
@@ -48,8 +50,10 @@ export default function DocumentCardList({
               <UsersIcon className="mr-1 h-3.5 w-3.5" />
               <span>
                 {document.collaborators_count > 0 
-                  ? `${document.collaborators_count} colaborador${document.collaborators_count > 1 ? 'es' : ''}` 
-                  : 'Somente você'}
+                  ? `${document.collaborators_count} ${document.collaborators_count > 1 
+                      ? t.documents.collaborators.multiplePlural 
+                      : t.documents.collaborators.multiple}` 
+                  : t.documents.collaborators.onlyYou}
               </span>
             </div>
             <div className="flex items-center">
@@ -59,7 +63,7 @@ export default function DocumentCardList({
           </div>
         </div>
         <span className="inline-flex items-center ml-4 text-sm text-blue-600 dark:text-blue-400 group-hover:underline">
-          Abrir
+          {t.documents.actions.open}
           <ArrowRightIcon className="ml-1 h-4 w-4" />
         </span>
       </Link>
@@ -69,7 +73,7 @@ export default function DocumentCardList({
           <button 
             onClick={onMenuToggle}
             className="p-1 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300 transition-colors"
-            aria-label="Opções do documento"
+            aria-label={t.documents.actions.open}
           >
             <MoreVerticalIcon className="h-4 w-4" />
           </button>
@@ -89,28 +93,28 @@ export default function DocumentCardList({
                     onClick={closeMenu}
                   >
                     <ArrowRightIcon className="mr-2 h-4 w-4" />
-                    Abrir editor
+                    {t.documents.actions.openEditor}
                   </Link>
                   
-                  {/* Opção de editar título */}
+                  {/* Edit title option */}
                   {onEditTitle && (
                     <button 
                       onClick={onEditClick}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                     >
                       <PencilIcon className="mr-2 h-4 w-4" />
-                      Editar título
+                      {t.documents.actions.editTitle}
                     </button>
                   )}
                   
-                  {/* Opção de excluir */}
+                  {/* Delete option */}
                   {onDelete && (
                     <button 
                       onClick={onDeleteClick}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
                     >
                       <Trash2Icon className="mr-2 h-4 w-4" />
-                      Excluir documento
+                      {t.documents.actions.delete}
                     </button>
                   )}
                 </div>

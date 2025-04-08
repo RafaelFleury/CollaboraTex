@@ -32,10 +32,10 @@ export function useDocumentsList() {
   const { user, isLoggedIn, loading: authLoading } = useAuth();
   
   const fetchDocuments = async () => {
-    // Não tente carregar documentos se não estivermos logados
+    // Don't try to load documents if we're not logged in
     if (!isLoggedIn || !user) {
       setDocuments([]);
-      setError('Usuário não autenticado');
+      setError('User not authenticated');
       setIsLoading(false);
       return;
     }
@@ -44,7 +44,7 @@ export function useDocumentsList() {
     setError(null);
     
     try {
-      // Verificar a sessão atual
+      // Check current session
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
@@ -52,10 +52,10 @@ export function useDocumentsList() {
       }
       
       if (!sessionData.session) {
-        throw new Error('Sessão de autenticação não encontrada');
+        throw new Error('Authentication session not found');
       }
       
-      // Buscar os documentos que o usuário é proprietário
+      // Fetch documents owned by the user
       const { data: ownedDocs, error: ownedDocsError } = await supabase
         .from('documents')
         .select('*')
@@ -66,7 +66,7 @@ export function useDocumentsList() {
         throw new Error(ownedDocsError.message);
       }
       
-      // Formatar os documentos para a exibição
+      // Format documents for display
       const formattedDocs = ownedDocs.map((doc: SupabaseDocument) => ({
         id: doc.id,
         title: doc.title,
@@ -74,36 +74,36 @@ export function useDocumentsList() {
         updated_at: doc.updated_at,
         owner_id: doc.owner_id,
         is_public: doc.is_public,
-        // Definir como 0 até a funcionalidade de colaboração ser implementada
+        // Set as 0 until collaboration functionality is implemented
         collaborators_count: 0
       }));
       
       setDocuments(formattedDocs);
     } catch (err) {
-      console.error('Erro ao buscar documentos:', err);
-      setError(err instanceof Error ? err.message : 'Erro ao carregar documentos');
+      console.error('Error fetching documents:', err);
+      setError(err instanceof Error ? err.message : 'Error loading documents');
       setDocuments([]);
     } finally {
       setIsLoading(false);
     }
   };
   
-  // Buscar documentos quando o componente montar e o usuário estiver autenticado
+  // Fetch documents when component mounts and user is authenticated
   useEffect(() => {
-    // Apenas carregue documentos quando a autenticação não estiver carregando
-    // e o usuário estiver logado
+    // Only load documents when authentication is not loading
+    // and user is logged in
     if (!authLoading && isLoggedIn && user) {
       fetchDocuments();
     }
   }, [authLoading, isLoggedIn, user]);
   
-  // Função para criar novo documento
+  // Function to create new document
   const createDocument = async (title: string) => {
-    // Não tente criar um documento se não estivermos logados
+    // Don't try to create a document if we're not logged in
     if (!isLoggedIn || !user) {
       return { 
         success: false, 
-        error: 'Usuário não autenticado' 
+        error: 'User not authenticated' 
       };
     }
     
@@ -115,7 +115,7 @@ export function useDocumentsList() {
       }
       
       if (!sessionData.session) {
-        throw new Error('Sessão de autenticação não encontrada');
+        throw new Error('Authentication session not found');
       }
       
       const { data, error } = await supabase
@@ -133,28 +133,28 @@ export function useDocumentsList() {
       }
       
       if (data && data.length > 0) {
-        // Recarregar a lista de documentos
+        // Reload document list
         await fetchDocuments();
         return { success: true, documentId: data[0].id };
       }
       
-      return { success: false, error: 'Falha ao criar documento' };
+      return { success: false, error: 'Failed to create document' };
     } catch (err) {
-      console.error('Erro ao criar documento:', err);
+      console.error('Error creating document:', err);
       return { 
         success: false, 
-        error: err instanceof Error ? err.message : 'Erro ao criar documento' 
+        error: err instanceof Error ? err.message : 'Error creating document' 
       };
     }
   };
 
-  // Função para deletar um documento
+  // Function to delete a document
   const deleteDocument = async (documentId: string) => {
-    // Não tente deletar um documento se não estivermos logados
+    // Don't try to delete a document if we're not logged in
     if (!isLoggedIn || !user) {
       return { 
         success: false, 
-        error: 'Usuário não autenticado' 
+        error: 'User not authenticated' 
       };
     }
     
@@ -166,10 +166,10 @@ export function useDocumentsList() {
       }
       
       if (!sessionData.session) {
-        throw new Error('Sessão de autenticação não encontrada');
+        throw new Error('Authentication session not found');
       }
       
-      // Verificar se o usuário é o dono do documento
+      // Check if user owns the document
       const { data: docCheck, error: docCheckError } = await supabase
         .from('documents')
         .select('owner_id')
@@ -181,14 +181,14 @@ export function useDocumentsList() {
       }
       
       if (!docCheck) {
-        throw new Error('Documento não encontrado');
+        throw new Error('Document not found');
       }
       
       if (docCheck.owner_id !== user.id) {
-        throw new Error('Você não tem permissão para excluir este documento');
+        throw new Error('You do not have permission to delete this document');
       }
       
-      // Deletar o documento
+      // Delete the document
       const { error: deleteError } = await supabase
         .from('documents')
         .delete()
@@ -198,15 +198,15 @@ export function useDocumentsList() {
         throw new Error(deleteError.message);
       }
       
-      // Atualizar a lista após excluir
+      // Update list after deletion
       await fetchDocuments();
       
       return { success: true };
     } catch (err) {
-      console.error('Erro ao deletar documento:', err);
+      console.error('Error deleting document:', err);
       return { 
         success: false, 
-        error: err instanceof Error ? err.message : 'Erro ao deletar documento' 
+        error: err instanceof Error ? err.message : 'Error deleting document' 
       };
     }
   };

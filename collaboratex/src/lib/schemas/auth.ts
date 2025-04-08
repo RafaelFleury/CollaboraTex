@@ -1,37 +1,37 @@
 import { z } from 'zod';
 
-// Mensagens de erro em português
+// Error messages in English
 export const authErrorMessages = {
   email: {
-    required: 'Email é obrigatório',
-    invalid: 'Formato de email inválido',
+    required: 'Email is required',
+    invalid: 'Invalid email format',
   },
   password: {
-    required: 'Senha é obrigatória',
-    tooShort: 'Senha deve ter pelo menos 8 caracteres',
+    required: 'Password is required',
+    tooShort: 'Password must be at least 8 characters',
   },
 };
 
-// Esquema de validação para o email
+// Validation schema for email
 export const emailSchema = z
   .string()
   .min(1, { message: authErrorMessages.email.required })
   .email({ message: authErrorMessages.email.invalid });
 
-// Esquema de validação para a senha
+// Validation schema for password
 export const passwordSchema = z
   .string()
   .min(1, { message: authErrorMessages.password.required })
   .min(8, { message: authErrorMessages.password.tooShort });
 
-// Esquema de validação para o formulário de login
+// Validation schema for login form
 export const loginSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
 });
 
-// Esquema de validação para o formulário de registro
+// Validation schema for registration form
 export const registerSchema = loginSchema;
 
-// Tipo para os campos do formulário de login/registro
+// Type for login/registration form fields
 export type AuthFormValues = z.infer<typeof loginSchema>; 

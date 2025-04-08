@@ -1,11 +1,13 @@
 import { ptBR } from './pt-BR';
+import { enUS } from './en-US';
 
 // Default language
-export const defaultLanguage = 'pt-BR';
+export const defaultLanguage = 'en-US';
 
 // Available languages
 export const languages = {
   'pt-BR': ptBR,
+  'en-US': enUS,
 };
 
 // Get translations for a specific language

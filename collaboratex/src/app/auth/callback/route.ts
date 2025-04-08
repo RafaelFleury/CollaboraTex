@@ -7,22 +7,22 @@ export async function GET(request: NextRequest) {
     const requestUrl = new URL(request.url);
     const code = requestUrl.searchParams.get("code");
     
-    console.log("[auth/callback] Recebido código de autorização OAuth:", code ? "Presente" : "Ausente");
+    console.log("[auth/callback] Received OAuth authorization code:", code ? "Present" : "Absent");
     
     if (code) {
-      // Inicializar cliente Supabase
+      // Initialize Supabase client
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
       const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
       
       if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error("Variáveis de ambiente do Supabase não configuradas");
+        throw new Error("Supabase environment variables not configured");
       }
       
-      // Cria uma resposta que será usada para definir cookies
-      // É importante usar a resposta do Next.js para manipular os cookies
+      // Creates a response that will be used to set cookies
+      // It's important to use Next.js response to handle cookies
       const response = NextResponse.redirect(new URL("/dashboard", requestUrl.origin));
       
-      // Criar o cliente Supabase com cookieStore baseado na request/response
+      // Create Supabase client with cookieStore based on request/response
       const supabase = createServerClient(
         supabaseUrl,
         supabaseAnonKey,
@@ -48,22 +48,22 @@ export async function GET(request: NextRequest) {
         }
       );
       
-      // Trocar o código por uma sessão
-      console.log("[auth/callback] Trocando código por sessão");
+      // Exchange code for a session
+      console.log("[auth/callback] Exchanging code for session");
       await supabase.auth.exchangeCodeForSession(code);
-      console.log("[auth/callback] Troca concluída com sucesso");
+      console.log("[auth/callback] Exchange completed successfully");
       
-      // Redireciona para o dashboard após o processo de autenticação
-      console.log("[auth/callback] Redirecionando para dashboard");
+      // Redirect to dashboard after authentication process
+      console.log("[auth/callback] Redirecting to dashboard");
       return response;
     }
     
-    // Redireciona para o dashboard após o processo de autenticação (caso não tenha código)
-    console.log("[auth/callback] Redirecionando para dashboard (sem código)");
+    // Redirect to dashboard after authentication process (if no code)
+    console.log("[auth/callback] Redirecting to dashboard (no code)");
     return NextResponse.redirect(new URL("/dashboard", requestUrl.origin));
   } catch (error) {
-    console.error("[auth/callback] Erro ao processar callback:", error);
-    // Em caso de erro, redireciona para página de login
+    console.error("[auth/callback] Error processing callback:", error);
+    // In case of error, redirect to login page
     const redirectUrl = new URL("/auth/login", request.url);
     redirectUrl.searchParams.set("error", "auth_callback_error");
     return NextResponse.redirect(redirectUrl);

@@ -11,11 +11,11 @@ export const metadata: Metadata = {
     default: "CollaboraTex",
     template: "%s - CollaboraTex",
   },
-  description: "Editor colaborativo de LaTeX para trabalhos acadêmicos",
-  keywords: ["LaTeX", "colaboração", "editor", "tempo real", "acadêmico"],
+  description: "Collaborative LaTeX editor for academic papers",
+  keywords: ["LaTeX", "collaboration", "editor", "real-time", "academic"],
   authors: [
     {
-      name: "Time CollaboraTex",
+      name: "CollaboraTex Team",
     },
   ],
   creator: "CollaboraTex",
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           "min-h-screen font-sans antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-white",
