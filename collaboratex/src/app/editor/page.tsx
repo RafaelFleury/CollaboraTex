@@ -139,7 +139,7 @@ export default function EditorPage() {
                   <p className="text-gray-500 text-sm">Current Date</p>
                 </div>
                 
-                <div className="prose dark:prose-invert max-w-none">
+                <div className="prose dark:prose-dark prose-headings:text-gray-900 dark:prose-headings:text-white prose-a:text-blue-600 dark:prose-a:text-blue-400 max-w-none">
                   <h4 className="text-xl font-bold">1 Introduction</h4>
                   <p>Here is an example of a LaTeX document.</p>
                   

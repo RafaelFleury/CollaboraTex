@@ -48,6 +48,47 @@ module.exports = {
             },
           },
         },
+        dark: {
+          css: {
+            color: '#e2e8f0',
+            a: {
+              color: '#60a5fa',
+              '&:hover': {
+                color: '#93c5fd',
+              },
+            },
+            h1: {
+              color: '#f7fafc',
+            },
+            h2: {
+              color: '#f7fafc',
+            },
+            h3: {
+              color: '#f7fafc',
+            },
+            h4: {
+              color: '#f7fafc',
+            },
+            h5: {
+              color: '#f7fafc',
+            },
+            h6: {
+              color: '#f7fafc',
+            },
+            strong: {
+              color: '#f7fafc',
+            },
+            code: {
+              color: '#f7fafc',
+            },
+            figcaption: {
+              color: '#94a3b8',
+            },
+            blockquote: {
+              color: '#f7fafc',
+            },
+          },
+        },
       },
     },
     container: {
