@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Termos de Serviço - CollaboraTex',
-  description: 'Termos de Serviço do CollaboraTex',
+  title: 'Terms of Service - CollaboraTex',
+  description: 'Terms of Service of CollaboraTex',
 };
 
 export default function TermsPage() {
@@ -17,71 +17,71 @@ export default function TermsPage() {
             href="/" 
             className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
           >
-            Voltar ao Início
+            Back to Home
           </Link>
         </div>
       </header>
       
       <main className="container mx-auto px-6 py-8 max-w-4xl">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-          Termos de Serviço
+          Terms of Service
         </h1>
         
         <div className="prose dark:prose-invert max-w-none">
-          <p>Última atualização: {new Date().toLocaleDateString()}</p>
+          <p>Last updated: {new Date().toLocaleDateString()}</p>
           
-          <h2>1. Termos</h2>
+          <h2>1. Terms</h2>
           <p>
-            Ao acessar o site CollaboraTex, você concorda em cumprir estes termos de serviço, todas as leis e regulamentos aplicáveis e concorda que é responsável pelo cumprimento de todas as leis locais aplicáveis.
+            By accessing the CollaboraTex website, you agree to comply with these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.
           </p>
           
-          <h2>2. Uso da Licença</h2>
+          <h2>2. Use License</h2>
           <p>
-            É concedida permissão para usar temporariamente o CollaboraTex para uso pessoal, não comercial ou comercial. Esta é a concessão de uma licença, não uma transferência de título, e sob esta licença você não pode:
+            Permission is granted to temporarily use CollaboraTex for personal, non-commercial or commercial use. This is the grant of a license, not a transfer of title, and under this license you may not:
           </p>
           <ul>
-            <li>modificar ou copiar os materiais;</li>
-            <li>usar os materiais para qualquer finalidade comercial ou para exibição pública;</li>
-            <li>tentar descompilar ou fazer engenharia reversa de qualquer software contido no CollaboraTex;</li>
-            <li>remover quaisquer direitos autorais ou outras notações de propriedade dos materiais; ou</li>
-            <li>transferir os materiais para outra pessoa ou "espelhar" os materiais em qualquer outro servidor.</li>
+            <li>modify or copy the materials;</li>
+            <li>use the materials for any commercial purpose or for public display;</li>
+            <li>attempt to decompile or reverse engineer any software contained in CollaboraTex;</li>
+            <li>remove any copyright or other proprietary notations from the materials; or</li>
+            <li>transfer the materials to another person or "mirror" the materials on any other server.</li>
           </ul>
           
-          <h2>3. Isenção de responsabilidade</h2>
+          <h2>3. Disclaimer</h2>
           <p>
-            Os materiais no CollaboraTex são fornecidos "como estão". CollaboraTex não oferece garantias, expressas ou implícitas, e, por este meio, isenta e nega todas as outras garantias.
+            The materials on CollaboraTex are provided "as is". CollaboraTex makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties.
           </p>
           
-          <h2>4. Limitações</h2>
+          <h2>4. Limitations</h2>
           <p>
-            Em nenhum caso o CollaboraTex ou seus fornecedores serão responsáveis por quaisquer danos (incluindo, sem limitação, danos por perda de dados ou lucro, ou devido a interrupção dos negócios) decorrentes do uso ou da incapacidade de usar os materiais no CollaboraTex, mesmo que CollaboraTex ou um representante autorizado da CollaboraTex tenha sido notificado oralmente ou por escrito da possibilidade de tais danos.
+            In no event shall CollaboraTex or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on CollaboraTex, even if CollaboraTex or a CollaboraTex authorized representative has been notified orally or in writing of the possibility of such damage.
           </p>
           
-          <h2>5. Revisões e erros</h2>
+          <h2>5. Revisions and Errata</h2>
           <p>
-            Os materiais exibidos no site da CollaboraTex podem incluir erros técnicos, tipográficos ou fotográficos. CollaboraTex não garante que qualquer material em seu site seja preciso, completo ou atual. CollaboraTex pode fazer alterações nos materiais contidos em seu site a qualquer momento, sem aviso prévio.
+            The materials appearing on CollaboraTex's website may include technical, typographical, or photographic errors. CollaboraTex does not warrant that any of the materials on its website are accurate, complete, or current. CollaboraTex may make changes to the materials contained on its website at any time without notice.
           </p>
           
           <h2>6. Links</h2>
           <p>
-            O CollaboraTex não analisou todos os sites vinculados ao seu site e não é responsável pelo conteúdo de nenhum site vinculado. A inclusão de qualquer link não implica endosso por CollaboraTex do site. O uso de qualquer site vinculado é por conta e risco do usuário.
+            CollaboraTex has not reviewed all of the sites linked to its website and is not responsible for the contents of any linked site. The inclusion of any link does not imply endorsement by CollaboraTex of the site. Use of any linked website is at the user's own risk.
           </p>
           
-          <h2>7. Modificações dos Termos de Serviço</h2>
+          <h2>7. Modifications to Terms of Service</h2>
           <p>
-            O CollaboraTex pode revisar estes termos de serviço do site a qualquer momento, sem aviso prévio. Ao usar este site, você concorda em ficar vinculado à versão atual desses termos de serviço.
+            CollaboraTex may revise these terms of service for its website at any time without notice. By using this website, you are agreeing to be bound by the then current version of these terms of service.
           </p>
           
-          <h2>8. Lei aplicável</h2>
+          <h2>8. Governing Law</h2>
           <p>
-            Estes termos e condições são regidos e interpretados de acordo com as leis brasileiras e você se submete irrevogavelmente à jurisdição exclusiva dos tribunais naquele estado ou localidade.
+            These terms and conditions are governed by and construed in accordance with the laws of Brazil and you irrevocably submit to the exclusive jurisdiction of the courts in that state or location.
           </p>
         </div>
       </main>
       
       <footer className="border-t border-gray-200 dark:border-gray-700 py-6">
         <div className="container mx-auto px-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          © {new Date().getFullYear()} CollaboraTex. Todos os direitos reservados.
+          © {new Date().getFullYear()} CollaboraTex. All rights reserved.
         </div>
       </footer>
     </div>

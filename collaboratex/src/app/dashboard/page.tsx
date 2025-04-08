@@ -11,7 +11,7 @@ import { DocumentData } from '@/components/dashboard/DocumentCard';
 import { useDocumentsList } from '@/hooks/useDocumentsList';
 import { supabase } from '@/lib/supabase/client';
 
-// Definir o tipo do modo de visualização
+// Define view mode type
 type ViewMode = 'grid' | 'list';
 
 export default function DashboardPage() {
@@ -27,21 +27,21 @@ export default function DashboardPage() {
   } = useDocumentsList();
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [authRedirectAttempted, setAuthRedirectAttempted] = useState(false);
-  // Estado para controlar o modo de visualização
+  // State to control view mode
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
   // Redirect if not authenticated
   useEffect(() => {
-    // Apenas redirecionamos se a autenticação já estiver verificada 
-    // e o usuário não estiver logado e ainda não tentamos redirecionar
+    // Only redirect if authentication has been verified
+    // and user is not logged in and we haven't tried redirecting yet
     if (!authLoading && !isLoggedIn && !authRedirectAttempted) {
       setAuthRedirectAttempted(true);
-      console.log('Usuário não autenticado, redirecionando para login');
+      console.log('User not authenticated, redirecting to login');
       router.push('/auth/login');
     }
   }, [authLoading, isLoggedIn, router, authRedirectAttempted]);
 
-  // Converter os documentos do formato Supabase para o formato do DocumentCard
+  // Convert documents from Supabase format to DocumentCard format
   const formattedDocuments: DocumentData[] = documents.map(doc => ({
     id: doc.id,
     title: doc.title,
@@ -49,30 +49,30 @@ export default function DashboardPage() {
     collaborators_count: doc.collaborators_count || 0
   }));
 
-  // Manipulador para criar um novo documento
+  // Handler to create a new document
   const handleCreateDocument = async (title: string) => {
     if (!isLoggedIn) {
-      return { success: false, error: 'Usuário não autenticado' };
+      return { success: false, error: 'User not authenticated' };
     }
     return await createDocument(title);
   };
   
-  // Manipulador para excluir um documento
+  // Handler to delete a document
   const handleDeleteDocument = async (id: string) => {
     if (!isLoggedIn) {
-      return { success: false, error: 'Usuário não autenticado' };
+      return { success: false, error: 'User not authenticated' };
     }
     return await deleteDocument(id);
   };
   
-  // Manipulador para editar o título de um documento
+  // Handler to edit document title
   const handleEditDocumentTitle = async (id: string, newTitle: string) => {
     if (!isLoggedIn || !user) {
-      return { success: false, error: 'Usuário não autenticado' };
+      return { success: false, error: 'User not authenticated' };
     }
     
     try {
-      // Verificar a sessão atual
+      // Check current session
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
@@ -80,10 +80,10 @@ export default function DashboardPage() {
       }
       
       if (!sessionData.session) {
-        throw new Error('Sessão de autenticação não encontrada');
+        throw new Error('Authentication session not found');
       }
       
-      // Verificar se o usuário é o dono do documento
+      // Check if user owns the document
       const { data: docCheck, error: docCheckError } = await supabase
         .from('documents')
         .select('owner_id')
@@ -95,14 +95,14 @@ export default function DashboardPage() {
       }
       
       if (!docCheck) {
-        throw new Error('Documento não encontrado');
+        throw new Error('Document not found');
       }
       
       if (docCheck.owner_id !== user.id) {
-        throw new Error('Você não tem permissão para editar este documento');
+        throw new Error('You do not have permission to edit this document');
       }
       
-      // Atualizar o título do documento
+      // Update document title
       const { error: updateError } = await supabase
         .from('documents')
         .update({ title: newTitle, updated_at: new Date().toISOString() })
@@ -112,48 +112,48 @@ export default function DashboardPage() {
         throw new Error(updateError.message);
       }
       
-      // Recarregar a lista de documentos
+      // Reload document list
       await fetchDocuments();
       
       return { success: true };
     } catch (err) {
-      console.error('Erro ao editar título do documento:', err);
+      console.error('Error editing document title:', err);
       return { 
         success: false, 
-        error: err instanceof Error ? err.message : 'Erro ao editar título do documento' 
+        error: err instanceof Error ? err.message : 'Error editing document title' 
       };
     }
   };
 
-  // Alternar entre modos de visualização
+  // Toggle between view modes
   const toggleViewMode = (mode: ViewMode) => {
     setViewMode(mode);
   };
 
-  // Se a autenticação ainda está carregando, mostramos um spinner
+  // If authentication is still loading, show a spinner
   if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
         <div className="flex flex-col items-center space-y-4">
           <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
-          <p className="text-lg text-gray-700 dark:text-gray-300">Verificando autenticação...</p>
+          <p className="text-lg text-gray-700 dark:text-gray-300">Verifying authentication...</p>
         </div>
       </div>
     );
   }
 
-  // Se o usuário não está logado, redirecionamos (via useEffect)
+  // If user is not logged in, redirect (via useEffect)
   if (!isLoggedIn) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
         <div className="flex flex-col items-center space-y-4">
           <AlertCircleIcon className="h-12 w-12 text-yellow-500" />
-          <p className="text-lg text-gray-700 dark:text-gray-300">Sessão expirada ou usuário não autenticado</p>
+          <p className="text-lg text-gray-700 dark:text-gray-300">Session expired or user not authenticated</p>
           <button 
             onClick={() => router.push('/auth/login')}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
-            Fazer login
+            Log in
           </button>
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function DashboardPage() {
               }}
               className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
-              Sair
+              Log out
             </button>
           </div>
         </div>
@@ -194,22 +194,22 @@ export default function DashboardPage() {
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div className="mb-4 sm:mb-0">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Seus Documentos
+              Your Documents
             </h2>
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-              Gerencie seus documentos LaTeX e colaborações
+              Manage your LaTeX documents and collaborations
             </p>
           </div>
           <div className="flex items-center space-x-3">
-            {/* Botões de alternância para o modo de visualização */}
+            {/* Toggle buttons for view mode */}
             <div className="mr-2 bg-gray-100 rounded-lg p-1 dark:bg-gray-700 flex items-center">
               <button
                 onClick={() => toggleViewMode('grid')}
                 className={`p-1.5 rounded ${viewMode === 'grid' 
                   ? 'bg-white text-blue-600 shadow-sm dark:bg-gray-600 dark:text-blue-400' 
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
-                aria-label="Visualização em grid"
-                title="Visualização em grid"
+                aria-label="Grid view"
+                title="Grid view"
               >
                 <GridIcon className="h-5 w-5" />
               </button>
@@ -218,8 +218,8 @@ export default function DashboardPage() {
                 className={`p-1.5 rounded ${viewMode === 'list' 
                   ? 'bg-white text-blue-600 shadow-sm dark:bg-gray-600 dark:text-blue-400' 
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
-                aria-label="Visualização em lista"
-                title="Visualização em lista"
+                aria-label="List view"
+                title="List view"
               >
                 <ListIcon className="h-5 w-5" />
               </button>
@@ -229,7 +229,7 @@ export default function DashboardPage() {
               className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors dark:bg-blue-700 dark:hover:bg-blue-800"
             >
               <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
-              Novo Documento
+              New Document
             </button>
           </div>
         </div>
@@ -239,37 +239,37 @@ export default function DashboardPage() {
             <div className="flex items-center">
               <AlertCircleIcon className="h-5 w-5 text-red-400 mr-3" />
               <p className="text-sm text-red-700 dark:text-red-300">
-                Erro ao carregar documentos: {error}
+                Error loading documents: {error}
               </p>
             </div>
-            {error.includes('autenticação') || error.includes('sessão') ? (
+            {error.includes('authentication') || error.includes('session') ? (
               <div className="mt-3">
                 <button 
                   onClick={() => router.push('/auth/login')}
                   className="text-sm text-red-700 dark:text-red-300 underline"
                 >
-                  Fazer login novamente
+                  Go to login
                 </button>
               </div>
             ) : null}
           </div>
         )}
 
-        {isCreatingNew && (
-          <CreateDocumentForm 
-            onCancel={() => setIsCreatingNew(false)}
-            onSubmit={handleCreateDocument}
-          />
-        )}
-
         <DocumentsGrid 
           documents={formattedDocuments}
+          isLoading={docsLoading}
           onNewDocument={() => setIsCreatingNew(true)}
           onDeleteDocument={handleDeleteDocument}
           onEditDocumentTitle={handleEditDocumentTitle}
-          isLoading={docsLoading}
           viewMode={viewMode}
         />
+
+        {isCreatingNew && (
+          <CreateDocumentForm
+            onSubmit={handleCreateDocument}
+            onCancel={() => setIsCreatingNew(false)}
+          />
+        )}
       </main>
     </div>
   );

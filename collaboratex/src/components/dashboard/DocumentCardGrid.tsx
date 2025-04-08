@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { CalendarIcon, ArrowRightIcon, MoreVerticalIcon, UsersIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { enUS, ptBR } from 'date-fns/locale';
 import { DocumentData } from './types';
+import { defaultLanguage, t } from '@/lib/i18n';
 
 interface DocumentCardGridProps {
   document: DocumentData;
@@ -25,10 +26,11 @@ export default function DocumentCardGrid({
   closeMenu,
   onEditTitle
 }: DocumentCardGridProps) {
-  // Formatar a data de edição
+  // Format the edit date
+  const locale = defaultLanguage.startsWith('pt') ? ptBR : enUS;
   const formattedDate = formatDistanceToNow(new Date(document.updated_at), {
     addSuffix: true,
-    locale: ptBR
+    locale: locale
   });
 
   return (
@@ -44,7 +46,7 @@ export default function DocumentCardGrid({
             <button 
               onClick={onMenuToggle}
               className="ml-2 p-1 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300 transition-colors"
-              aria-label="Opções do documento"
+              aria-label="Document options"
             >
               <MoreVerticalIcon className="h-4 w-4" />
             </button>
@@ -64,27 +66,25 @@ export default function DocumentCardGrid({
                       onClick={closeMenu}
                     >
                       <ArrowRightIcon className="mr-2 h-4 w-4" />
-                      Abrir editor
+                      {t.openEditor}
                     </Link>
                     
-                    {/* Opção de editar título */}
-                    {onEditTitle && (
-                      <button 
-                        onClick={onEditClick}
-                        className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-                      >
-                        <PencilIcon className="mr-2 h-4 w-4" />
-                        Editar título
-                      </button>
-                    )}
+                    {/* Edit title option */}
+                    <button 
+                      onClick={onEditClick}
+                      className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    >
+                      <PencilIcon className="mr-2 h-4 w-4" />
+                      {t.editTitle}
+                    </button>
                     
-                    {/* Opção de excluir */}
+                    {/* Delete option */}
                     <button 
                       onClick={onDeleteClick}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
                     >
                       <Trash2Icon className="mr-2 h-4 w-4" />
-                      Excluir documento
+                      {t.deleteDocument}
                     </button>
                   </div>
                 </div>
@@ -94,19 +94,19 @@ export default function DocumentCardGrid({
         )}
       </div>
       
-      {/* Corpo do card - clicável para abrir o editor */}
+      {/* Card body - clickable to open editor */}
       <Link 
         href={`/editor?id=${document.id}`}
         className="flex-grow flex flex-col p-3"
       >
-        {/* Informações em linha: colaboradores e data */}
+        {/* Inline information: collaborators and date */}
         <div className="flex justify-between items-center text-xs text-gray-600 dark:text-gray-400">
           <div className="flex items-center">
             <UsersIcon className="mr-1 h-3.5 w-3.5" />
             <span>
               {document.collaborators_count > 0 
-                ? `${document.collaborators_count} colaborador${document.collaborators_count > 1 ? 'es' : ''}` 
-                : 'Somente você'}
+                ? `${document.collaborators_count} ${document.collaborators_count > 1 ? t.collaboratorsPlural : t.collaboratorsSingular}` 
+                : t.onlyYou}
             </span>
           </div>
           <div className="flex items-center">
@@ -115,10 +115,10 @@ export default function DocumentCardGrid({
           </div>
         </div>
         
-        {/* Botão de abrir na parte inferior */}
+        {/* Open button at the bottom */}
         <div className="mt-3 flex justify-end">
           <span className="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 group-hover:underline">
-            Abrir
+            {t.open}
             <ArrowRightIcon className="ml-1 h-4 w-4" />
           </span>
         </div>

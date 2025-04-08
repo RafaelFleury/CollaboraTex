@@ -21,41 +21,41 @@ export function MonacoEditor({
   const [isLoaded, setIsLoaded] = useState(false);
   const editorRef = useRef<any>(null);
 
-  // Salvar a referência do editor quando estiver pronto
+  // Save the editor reference when it's ready
   const handleEditorDidMount = (editor: any, monaco: Monaco) => {
     editorRef.current = editor;
     setIsLoaded(true);
     
-    // Configurar opções específicas para LaTeX
+    // Configure specific options for LaTeX
     if (language === 'latex') {
       configureLaTeXLanguage(monaco);
     }
   };
 
-  // Configurar opções específicas para LaTeX
+  // Configure specific options for LaTeX
   const configureLaTeXLanguage = (monaco: Monaco) => {
-    // Aqui podemos configurar regras de syntax highlighting para LaTeX
-    // Este é um placeholder simples, depois será aprimorado
+    // Here we can configure syntax highlighting rules for LaTeX
+    // This is a simple placeholder, will be improved later
     monaco.languages.register({ id: 'latex' });
     monaco.languages.setMonarchTokensProvider('latex', {
       tokenizer: {
         root: [
-          // Comandos LaTeX (iniciando com \)
+          // LaTeX commands (starting with \)
           [/\\[a-zA-Z]+/, 'keyword'],
-          // Ambientes (begin/end)
+          // Environments (begin/end)
           [/\\(begin|end)(\{)([^}]*)(\})/, ['keyword', 'delimiter.bracket', 'type', 'delimiter.bracket']],
-          // Matemática inline $...$
+          // Inline math $...$
           [/\$[^$]*\$/, 'string'],
-          // Comentários
+          // Comments
           [/%.*$/, 'comment'],
-          // Chaves, parênteses e colchetes
+          // Braces, parentheses and brackets
           [/[\{\}\[\]\(\)]/, 'delimiter.bracket'],
         ]
       }
     });
   };
 
-  // Handler para mudanças no editor
+  // Handler for editor changes
   const handleEditorChange = (value: string | undefined) => {
     if (onChange) {
       onChange(value);

@@ -17,14 +17,14 @@ export default function AuthForm({ type }: AuthFormProps) {
   const [googleLoading, setGoogleLoading] = useState(false);
   const { signIn, signUp, signInWithGoogle } = useAuth();
   
-  // Usando react-hook-form com validação zod
+  // Using react-hook-form with zod validation
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<AuthFormValues>({
     resolver: zodResolver(type === 'login' ? loginSchema : registerSchema),
-    mode: 'onBlur', // Valida quando o campo perde o foco
+    mode: 'onBlur', // Validates when the field loses focus
   });
 
   const onSubmit = async (data: AuthFormValues) => {
@@ -59,9 +59,9 @@ export default function AuthForm({ type }: AuthFormProps) {
       if (!success && error) {
         setError(error);
       }
-      // Não precisamos fazer nada se for bem-sucedido, o usuário será redirecionado
+      // We don't need to do anything if successful, the user will be redirected
     } catch (err: any) {
-      setError(err.message || 'Erro ao conectar com o Google');
+      setError(err.message || 'An error occurred when connecting with Google');
     } finally {
       setGoogleLoading(false);
     }
@@ -78,7 +78,7 @@ export default function AuthForm({ type }: AuthFormProps) {
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800 dark:text-red-200">Erro de Autenticação</h3>
+              <h3 className="text-sm font-medium text-red-800 dark:text-red-200">Authentication Error</h3>
               <div className="mt-2 text-sm text-red-700 dark:text-red-300">
                 <p>{error}</p>
               </div>
@@ -89,7 +89,7 @@ export default function AuthForm({ type }: AuthFormProps) {
 
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          E-mail
+          Email
         </label>
         <div className="mt-1 relative">
           <input
@@ -98,7 +98,7 @@ export default function AuthForm({ type }: AuthFormProps) {
             type="email"
             autoComplete="email"
             className={`block w-full appearance-none rounded-md border ${errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'} px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400`}
-            placeholder="seu-email@exemplo.com"
+            placeholder="your-email@example.com"
           />
           {errors.email && (
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -117,7 +117,7 @@ export default function AuthForm({ type }: AuthFormProps) {
 
       <div>
         <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Senha
+          Password
         </label>
         <div className="mt-1 relative">
           <input
@@ -126,7 +126,7 @@ export default function AuthForm({ type }: AuthFormProps) {
             type="password"
             autoComplete={type === 'login' ? 'current-password' : 'new-password'}
             className={`block w-full appearance-none rounded-md border ${errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'} px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400`}
-            placeholder={type === 'login' ? '••••••••' : 'Crie uma senha forte'}
+            placeholder={type === 'login' ? '••••••••' : 'Create a strong password'}
           />
           {errors.password && (
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -145,7 +145,7 @@ export default function AuthForm({ type }: AuthFormProps) {
           <div className="mt-2 flex items-center justify-end">
             <div className="text-sm">
               <Link href="/auth/reset-password" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-                Esqueceu sua senha?
+                Forgot your password?
               </Link>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function AuthForm({ type }: AuthFormProps) {
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
           ) : null}
-          {type === 'login' ? 'Entrar' : 'Criar conta'}
+          {type === 'login' ? 'Sign In' : 'Create Account'}
         </button>
       </div>
 
@@ -173,7 +173,7 @@ export default function AuthForm({ type }: AuthFormProps) {
           <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white text-gray-500 dark:bg-gray-800 dark:text-gray-400">ou</span>
+          <span className="px-2 bg-white text-gray-500 dark:bg-gray-800 dark:text-gray-400">or</span>
         </div>
       </div>
 
@@ -197,19 +197,19 @@ export default function AuthForm({ type }: AuthFormProps) {
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
           )}
-          {type === 'login' ? 'Entrar com Google' : 'Cadastrar com Google'}
+          {type === 'login' ? 'Sign In with Google' : 'Sign Up with Google'}
         </button>
       </div>
 
       {type === 'register' && (
         <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-          Ao criar uma conta, você concorda com nossos{' '}
+          By creating an account, you agree to our{' '}
           <Link href="/terms" className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-            Termos de Serviço
+            Terms of Service
           </Link>{' '}
-          e{' '}
+          and{' '}
           <Link href="/privacy" className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-            Política de Privacidade
+            Privacy Policy
           </Link>
           .
         </div>

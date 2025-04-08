@@ -13,13 +13,13 @@ export default function DocumentCard({ document, onDelete, onEditTitle, listMode
   const [error, setError] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   
-  // Estados para o modal de edição de título
+  // States for title editing modal
   const [showEditModal, setShowEditModal] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState(document.title);
   const [editError, setEditError] = useState<string | null>(null);
   
-  // Debug para verificar props
+  // Debug for checking props
   useEffect(() => {
     if (showMenu) {
       console.log(
@@ -67,15 +67,15 @@ export default function DocumentCard({ document, onDelete, onEditTitle, listMode
         setError(result.error);
         setIsDeleting(false);
       } else {
-        // Fechar o modal será automático, pois o componente será desmontado após a exclusão
+        // Modal will close automatically as the component will unmount after deletion
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao excluir documento');
+      setError(err instanceof Error ? err.message : 'Error deleting document');
       setIsDeleting(false);
     }
   };
   
-  // Handlers para o modal de edição de título
+  // Handlers for title editing modal
   const handleEditClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -102,13 +102,13 @@ export default function DocumentCard({ document, onDelete, onEditTitle, listMode
     
     if (!onEditTitle) return;
     
-    // Validar título antes de atualizar
+    // Validate title before updating
     if (!newTitle.trim()) {
-      setEditError("O título não pode estar vazio.");
+      setEditError("Title cannot be empty.");
       return;
     }
     
-    // Se o título não mudou, apenas fechar o modal
+    // If the title hasn't changed, just close the modal
     if (newTitle.trim() === document.title) {
       setShowEditModal(false);
       return;
@@ -124,12 +124,12 @@ export default function DocumentCard({ document, onDelete, onEditTitle, listMode
         setEditError(result.error);
         setIsEditingTitle(false);
       } else {
-        // Fechar o modal após a atualização bem-sucedida
+        // Close the modal after successful update
         setShowEditModal(false);
         setIsEditingTitle(false);
       }
     } catch (err) {
-      setEditError(err instanceof Error ? err.message : 'Erro ao atualizar título');
+      setEditError(err instanceof Error ? err.message : 'Error updating title');
       setIsEditingTitle(false);
     }
   };
@@ -163,7 +163,7 @@ export default function DocumentCard({ document, onDelete, onEditTitle, listMode
         />
       )}
 
-      {/* Modais compartilhados entre os modos de exibição */}
+      {/* Shared modals between display modes */}
       <DeleteDocumentModal
         document={document}
         isOpen={showDeleteModal}
@@ -187,5 +187,5 @@ export default function DocumentCard({ document, onDelete, onEditTitle, listMode
   );
 }
 
-// Re-exportação das interfaces para compatibilidade com código existente
+// Re-export interfaces for compatibility with existing code
 export type { DocumentData } from './types'; 

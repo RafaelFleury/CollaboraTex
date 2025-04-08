@@ -13,10 +13,10 @@ declare module '*.css' {
   export default content;
 }
 
-// Ignorar avisos de globals.css com @tailwind directives
+// Ignore warnings from globals.css with @tailwind directives
 declare module 'globals.css';
 
-// Bibliotecas com problemas de tipos
+// Libraries with typing issues
 declare module 'estree';
 declare module 'json-schema';
 declare module 'json5';

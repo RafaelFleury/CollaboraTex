@@ -22,7 +22,7 @@ export default function DocumentsGrid({
   isLoading = false,
   viewMode = 'grid'
 }: DocumentsGridProps) {
-  // Estado de carregamento
+  // Loading state
   if (isLoading) {
     return (
       <div className="rounded-lg bg-white p-8 text-center shadow-md dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
@@ -30,22 +30,22 @@ export default function DocumentsGrid({
           <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
         </div>
         <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-          Carregando seus documentos...
+          Loading your documents...
         </p>
       </div>
     );
   }
 
-  // Estado vazio - sem documentos
+  // Empty state - no documents
   if (documents.length === 0) {
     return (
       <div className="rounded-lg bg-white p-8 text-center shadow-md dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <FilePlusIcon className="mx-auto h-12 w-12 text-gray-400" />
         <h3 className="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
-          Nenhum documento
+          No documents
         </h3>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Comece criando um novo documento.
+          Start by creating a new document.
         </p>
         <div className="mt-6">
           <button
@@ -53,7 +53,7 @@ export default function DocumentsGrid({
             className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
-            Novo Documento
+            New Document
           </button>
         </div>
       </div>
@@ -62,7 +62,7 @@ export default function DocumentsGrid({
 
   // Estado com documentos - renderizar como grid ou lista baseado no viewMode
   return viewMode === 'grid' ? (
-    // Visualização em grid
+    // Grid view
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {documents.map((doc) => (
         <DocumentCard 
@@ -74,7 +74,7 @@ export default function DocumentsGrid({
       ))}
     </div>
   ) : (
-    // Visualização em lista
+    // List view
     <div className="flex flex-col space-y-3">
       {documents.map((doc) => (
         <DocumentCard 

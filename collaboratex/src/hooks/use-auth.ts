@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { AuthContext } from '@/components/auth/AuthProvider';
 
-// Define tipos localmente para evitar problemas de namespace
+// Define types locally to avoid namespace issues
 type SupabaseUser = {
   id: string;
   email?: string;
@@ -37,11 +37,11 @@ export function useAuth() {
   // Sign in with email and password
   const signIn = async (email: string, password: string) => {
     try {
-      console.log('[useAuth signIn] Iniciando login com:', email);
+      console.log('[useAuth signIn] Starting login with:', email);
       
-      // Log dos cookies antes do login
+      // Log cookies before login
       const cookiesBefore = document.cookie;
-      console.log('[useAuth signIn] Cookies antes do login:', cookiesBefore);
+      console.log('[useAuth signIn] Cookies before login:', cookiesBefore);
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -49,47 +49,47 @@ export function useAuth() {
       });
 
       if (error) {
-        console.error('[useAuth signIn] Erro de autenticação:', error.message);
+        console.error('[useAuth signIn] Authentication error:', error.message);
         throw error;
       }
 
-      // Log dos cookies após o login
+      // Log cookies after login
       const cookiesAfter = document.cookie;
-      console.log('[useAuth signIn] Cookies após o login:', cookiesAfter);
+      console.log('[useAuth signIn] Cookies after login:', cookiesAfter);
       
-      // Verifica se o login foi bem-sucedido
+      // Check if login was successful
       if (data?.session) {
-        console.log('[useAuth signIn] Login bem-sucedido, sessão obtida:', data.session.user.email);
-        console.log('[useAuth signIn] Token de acesso:', data.session.access_token.substring(0, 20) + '...');
+        console.log('[useAuth signIn] Login successful, session obtained:', data.session.user.email);
+        console.log('[useAuth signIn] Access token:', data.session.access_token.substring(0, 20) + '...');
         
-        // Força uma atualização da sessão
+        // Force a session update
         const { data: userData } = await supabase.auth.getUser();
-        console.log('[useAuth signIn] Usuário verificado ANTES do push:', 
-          userData.user?.email ?? 'Nenhum usuário');
+        console.log('[useAuth signIn] User verified BEFORE push:', 
+          userData.user?.email ?? 'No user');
         
-        // Pequeno atraso antes de redirecionar para garantir que o cookie seja definido
-        console.log('[useAuth signIn] Aguardando 800ms antes de redirecionar...');
+        // Small delay before redirecting to ensure the cookie is set
+        console.log('[useAuth signIn] Waiting 800ms before redirecting...');
         await new Promise(resolve => setTimeout(resolve, 800));
         
-        // Log dos cookies após o delay
+        // Log cookies after delay
         const cookiesAfterDelay = document.cookie;
-        console.log('[useAuth signIn] Cookies após delay:', cookiesAfterDelay);
+        console.log('[useAuth signIn] Cookies after delay:', cookiesAfterDelay);
         
-        // Redireciona para o dashboard
-        console.log('[useAuth signIn] Redirecionando para /dashboard');
+        // Redirect to dashboard
+        console.log('[useAuth signIn] Redirecting to /dashboard');
         router.push('/dashboard');
         
-        // Força uma nova renderização do componente
-        console.log('[useAuth signIn] Atualizando router');
+        // Force component re-rendering
+        console.log('[useAuth signIn] Updating router');
         router.refresh();
         
         return { success: true };
       } else {
-        console.error('[useAuth signIn] Login falhou: Sessão não encontrada nos dados retornados');
-        throw new Error('Falha ao fazer login. Tente novamente.');
+        console.error('[useAuth signIn] Login failed: Session not found in returned data');
+        throw new Error('Failed to login. Please try again.');
       }
     } catch (error: any) {
-      console.error('[useAuth signIn] Erro catch:', error.message);
+      console.error('[useAuth signIn] Error catch:', error.message);
       return { success: false, error: error.message };
     }
   };
@@ -97,13 +97,13 @@ export function useAuth() {
   // Sign in with Google
   const signInWithGoogle = async () => {
     try {
-      console.log('[useAuth signInWithGoogle] Iniciando login com Google');
+      console.log('[useAuth signInWithGoogle] Starting login with Google');
       
-      // Log dos cookies antes do login
+      // Log cookies before login
       const cookiesBefore = document.cookie;
-      console.log('[useAuth signInWithGoogle] Cookies antes do login:', cookiesBefore);
+      console.log('[useAuth signInWithGoogle] Cookies before login:', cookiesBefore);
       
-      // Redirecionar para o fluxo de autenticação do Google
+      // Redirect to Google authentication flow
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -116,16 +116,16 @@ export function useAuth() {
       });
 
       if (error) {
-        console.error('[useAuth signInWithGoogle] Erro ao iniciar autenticação com Google:', error.message);
+        console.error('[useAuth signInWithGoogle] Error starting Google authentication:', error.message);
         throw error;
       }
 
-      // Se chegou aqui, o redirecionamento para o Google está sendo feito
-      console.log('[useAuth signInWithGoogle] Redirecionando para autenticação do Google:', data?.url);
+      // If we got here, the redirect to Google is happening
+      console.log('[useAuth signInWithGoogle] Redirecting to Google authentication:', data?.url);
       return { success: true };
       
     } catch (error: any) {
-      console.error('[useAuth signInWithGoogle] Erro catch:', error.message);
+      console.error('[useAuth signInWithGoogle] Error catch:', error.message);
       return { success: false, error: error.message };
     }
   };
@@ -133,7 +133,7 @@ export function useAuth() {
   // Sign up with email and password
   const signUp = async (email: string, password: string) => {
     try {
-      console.log('[useAuth signUp] Iniciando registro com:', email);
+      console.log('[useAuth signUp] Starting registration with:', email);
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -141,21 +141,21 @@ export function useAuth() {
       });
 
       if (error) {
-        console.error('[useAuth signUp] Erro de registro:', error.message);
+        console.error('[useAuth signUp] Registration error:', error.message);
         throw error;
       }
 
-      // Verifica se o registro foi bem-sucedido
+      // Check if registration was successful
       if (data?.user) {
-        console.log('[useAuth signUp] Registro bem-sucedido, redirecionando para verificação');
+        console.log('[useAuth signUp] Registration successful, redirecting to verification');
         router.push('/auth/verification');
         return { success: true };
       } else {
-        console.error('[useAuth signUp] Registro falhou: Usuário não encontrado nos dados retornados');
-        throw new Error('Falha ao criar conta. Tente novamente.');
+        console.error('[useAuth signUp] Registration failed: User not found in returned data');
+        throw new Error('Failed to create account. Please try again.');
       }
     } catch (error: any) {
-      console.error('[useAuth signUp] Erro catch:', error.message);
+      console.error('[useAuth signUp] Error catch:', error.message);
       return { success: false, error: error.message };
     }
   };
@@ -163,36 +163,36 @@ export function useAuth() {
   // Sign out
   const signOut = async () => {
     try {
-      console.log('[useAuth signOut] Iniciando logout');
+      console.log('[useAuth signOut] Starting logout');
       
-      // Log dos cookies antes do logout
+      // Log cookies before logout
       const cookiesBefore = document.cookie;
-      console.log('[useAuth signOut] Cookies antes do logout:', cookiesBefore);
+      console.log('[useAuth signOut] Cookies before logout:', cookiesBefore);
       
       const { error } = await supabase.auth.signOut({
-        scope: 'local' // Desloga apenas do dispositivo atual
+        scope: 'local' // Logs out only from the current device
       });
       
       if (error) {
-        console.error('[useAuth signOut] Erro de logout:', error.message);
+        console.error('[useAuth signOut] Logout error:', error.message);
         throw error;
       }
 
-      console.log('[useAuth signOut] Logout bem-sucedido');
+      console.log('[useAuth signOut] Logout successful');
       
-      // Log dos cookies após o logout
+      // Log cookies after logout
       const cookiesAfter = document.cookie;
-      console.log('[useAuth signOut] Cookies após o logout:', cookiesAfter);
+      console.log('[useAuth signOut] Cookies after logout:', cookiesAfter);
       
-      // Força uma atualização da sessão após o logout
+      // Force session update after logout
       const { data } = await supabase.auth.getUser();
-      console.log('[useAuth signOut] Usuário após logout:', 
-        data.user?.email ?? 'Nenhum usuário (esperado)');
+      console.log('[useAuth signOut] User after logout:', 
+        data.user?.email ?? 'No user (expected)');
       
-      // Não fazemos o redirecionamento aqui, deixamos para o componente que chamou
+      // We don't redirect here, we leave it to the component that called
       return { success: true };
     } catch (error: any) {
-      console.error('[useAuth signOut] Erro catch:', error.message);
+      console.error('[useAuth signOut] Error catch:', error.message);
       return { success: false, error: error.message };
     }
   };

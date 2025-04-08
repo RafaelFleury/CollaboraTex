@@ -1,16 +1,16 @@
 import { z } from 'zod';
 
-// Mensagens de erro em português
+// Error messages in English
 export const documentErrorMessages = {
   title: {
-    required: 'O título é obrigatório',
-    tooShort: 'O título deve conter pelo menos 3 caracteres',
-    tooLong: 'O título não pode exceder 100 caracteres',
-    invalid: 'O título contém caracteres inválidos'
+    required: 'Title is required',
+    tooShort: 'Title must be at least 3 characters',
+    tooLong: 'Title cannot exceed 100 characters',
+    invalid: 'Title contains invalid characters'
   }
 };
 
-// Esquema de validação para título do documento
+// Validation schema for document title
 export const documentTitleSchema = z
   .string()
   .min(1, { message: documentErrorMessages.title.required })
@@ -21,10 +21,10 @@ export const documentTitleSchema = z
     { message: documentErrorMessages.title.invalid }
   );
 
-// Esquema de validação para o formulário de criação de documento
+// Validation schema for document creation form
 export const createDocumentSchema = z.object({
   title: documentTitleSchema
 });
 
-// Tipo para os campos do formulário de criação de documento
+// Type for document creation form fields
 export type CreateDocumentFormValues = z.infer<typeof createDocumentSchema>; 

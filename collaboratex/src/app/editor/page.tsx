@@ -11,11 +11,11 @@ export default function EditorPage() {
   const documentId = searchParams.get('id');
   const router = useRouter();
   
-  // Estado local para o conteúdo do editor
+  // Local state for editor content
   const [editorContent, setEditorContent] = useState<string>('');
-  const [documentTitle, setDocumentTitle] = useState<string>('Documento sem título');
+  const [documentTitle, setDocumentTitle] = useState<string>('Untitled Document');
   
-  // Usar o hook para gerenciar o documento
+  // Use the hook to manage the document
   const {
     document,
     isLoading: isLoadingDoc,
@@ -26,7 +26,7 @@ export default function EditorPage() {
     updateContent
   } = useDocument(documentId || undefined);
   
-  // Sincronizar o estado local com o documento carregado
+  // Synchronize the local state with the loaded document
   useEffect(() => {
     if (document) {
       setEditorContent(document.content);
@@ -34,7 +34,7 @@ export default function EditorPage() {
     }
   }, [document]);
   
-  // Handler para mudanças no editor
+  // Handler for editor changes
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {
       setEditorContent(value);
@@ -42,16 +42,16 @@ export default function EditorPage() {
     }
   };
   
-  // Handler para salvar o documento
+  // Handler to save the document
   const handleSaveDocument = async () => {
     if (!document) {
-      // Criar um novo documento se não existir
+      // Create a new document if it doesn't exist
       await saveDocument({
         title: documentTitle,
         content: editorContent
       });
     } else {
-      // Atualizar documento existente
+      // Update existing document
       await saveDocument({
         ...document,
         content: editorContent
@@ -59,11 +59,11 @@ export default function EditorPage() {
     }
   };
   
-  // Formatar a hora do último salvamento
+  // Format the last saved time
   const formatLastSaved = () => {
     if (!lastSaved) return null;
     
-    return lastSaved.toLocaleTimeString('pt-BR', {
+    return lastSaved.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
@@ -86,7 +86,7 @@ export default function EditorPage() {
           <div className="flex items-center gap-4">
             {lastSaved && (
               <span className="text-sm text-gray-500 dark:text-gray-400">
-                Salvo às {formatLastSaved()}
+                Saved at {formatLastSaved()}
               </span>
             )}
             
@@ -96,7 +96,7 @@ export default function EditorPage() {
               onClick={handleSaveDocument}
               disabled={isSaving}
             >
-              {isSaving ? 'Salvando...' : 'Salvar'}
+              {isSaving ? 'Saving...' : 'Save'}
             </button>
           </div>
         </div>
@@ -109,18 +109,18 @@ export default function EditorPage() {
           </div>
         ) : error ? (
           <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-md text-red-800 dark:text-red-300">
-            <p>Erro ao carregar documento: {error}</p>
+            <p>Error loading document: {error}</p>
             <button 
               className="mt-2 text-sm underline"
               onClick={() => router.push('/dashboard')}
             >
-              Voltar para o dashboard
+              Back to dashboard
             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
-              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Código LaTeX</h2>
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">LaTeX Code</h2>
               <div className="border rounded-md border-gray-300 dark:border-gray-700 h-96">
                 <MonacoEditor
                   value={editorContent}
@@ -131,20 +131,20 @@ export default function EditorPage() {
             </div>
 
             <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
-              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Visualização</h2>
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Preview</h2>
               <div className="border rounded-md border-gray-300 dark:border-gray-700 p-4 h-96 overflow-auto">
                 <div className="mb-6 text-center border-b pb-4 border-gray-200 dark:border-gray-600">
-                  <h3 className="text-2xl font-bold mb-2">Meu Documento</h3>
-                  <p className="text-gray-600 dark:text-gray-400">Seu Nome</p>
-                  <p className="text-gray-500 text-sm">Data Atual</p>
+                  <h3 className="text-2xl font-bold mb-2">My Document</h3>
+                  <p className="text-gray-600 dark:text-gray-400">Your Name</p>
+                  <p className="text-gray-500 text-sm">Current Date</p>
                 </div>
                 
                 <div className="prose dark:prose-invert max-w-none">
-                  <h4 className="text-xl font-bold">1 Introdução</h4>
-                  <p>Aqui está um exemplo de documento LaTeX.</p>
+                  <h4 className="text-xl font-bold">1 Introduction</h4>
+                  <p>Here is an example of a LaTeX document.</p>
                   
-                  <h4 className="text-xl font-bold mt-4">2 Métodos</h4>
-                  <p>Você pode adicionar fórmulas como E = mc<sup>2</sup>.</p>
+                  <h4 className="text-xl font-bold mt-4">2 Methods</h4>
+                  <p>You can add formulas like E = mc<sup>2</sup>.</p>
                 </div>
               </div>
             </div>

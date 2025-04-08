@@ -1,14 +1,14 @@
 /// <reference types="react" />
 /// <reference types="react-dom" />
 
-// Resolvendo problemas com tipos JSX
+// Solving issues with JSX types
 declare namespace JSX {
   interface IntrinsicElements {
     [elemName: string]: any;
   }
 }
 
-// Declaração do módulo 'next'
+// Declaration of 'next' module
 declare module 'next' {
   import React from 'react';
   
@@ -31,7 +31,7 @@ declare module 'next' {
   }
 }
 
-// Declarações de módulos para geist fonts
+// Module declarations for geist fonts
 declare module 'geist/font/sans' {
   const GeistSans: {
     variable: string;
@@ -48,7 +48,7 @@ declare module 'geist/font/mono' {
   export { GeistMono };
 }
 
-// Declarações de módulos para Next.js
+// Module declarations for Next.js
 declare module 'next/link' {
   import React from 'react';
   

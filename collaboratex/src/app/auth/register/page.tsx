@@ -19,15 +19,15 @@ export default function RegisterPage() {
           </span>
         </Link>
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-          Crie sua conta
+          Create your account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          Já tem uma conta?{' '}
+          Already have an account?{' '}
           <Link 
             href="/auth/login" 
             className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
           >
-            Faça login
+            Sign in
           </Link>
         </p>
       </div>
@@ -42,7 +42,7 @@ export default function RegisterPage() {
             href="/" 
             className="font-medium text-gray-600 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-300"
           >
-            ← Voltar para a página inicial
+            ← Back to home page
           </Link>
         </div>
       </div>

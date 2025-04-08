@@ -13,7 +13,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       size="icon"
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       className={className}
-      aria-label="Alternar tema"
+      aria-label="Toggle theme"
     >
       <SunIcon className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <MoonIcon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
