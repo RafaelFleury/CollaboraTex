@@ -50,42 +50,18 @@ module.exports = {
         },
         dark: {
           css: {
-            color: '#e2e8f0',
+            color: 'var(--slate-200)', // ou referência ao sistema de cores do Tailwind
             a: {
-              color: '#60a5fa',
+              color: 'var(--primary-400)', // usando variáveis de cores existentes
               '&:hover': {
-                color: '#93c5fd',
+                color: 'var(--primary-300)',
               },
             },
-            h1: {
-              color: '#f7fafc',
-            },
-            h2: {
-              color: '#f7fafc',
-            },
-            h3: {
-              color: '#f7fafc',
-            },
-            h4: {
-              color: '#f7fafc',
-            },
-            h5: {
-              color: '#f7fafc',
-            },
-            h6: {
-              color: '#f7fafc',
-            },
-            strong: {
-              color: '#f7fafc',
-            },
-            code: {
+            'h1, h2, h3, h4, h5, h6, strong, code, blockquote': {
               color: '#f7fafc',
             },
             figcaption: {
               color: '#94a3b8',
-            },
-            blockquote: {
-              color: '#f7fafc',
             },
           },
         },
