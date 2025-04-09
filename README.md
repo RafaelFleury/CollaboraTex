@@ -3,7 +3,7 @@ A free and easy way to collaborate with colleagues when making Latex files.
 
 ## Overview
 
-CollaboraTex is a simplified, free alternative to Overleaf, focused on real-time collaborative editing of LaTeX documents. It aims to remove collaboration barriers for students, researchers, and small teams who need to work together on LaTeX documents without incurring costs.
+CollaboraTex is a simplified, free alternative to Overleaf, focused on real-time collaborative editing of LaTeX documents. It aims to remove collaboration barriers for students, researchers, and small teams who need to work together on LaTeX documents without incurring costs. Read /docs for more information.
 
 ## Problem & Solution
 
