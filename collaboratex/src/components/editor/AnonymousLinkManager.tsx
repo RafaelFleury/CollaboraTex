@@ -77,7 +77,7 @@ export default function AnonymousLinkManager({ documentId, isOwner }: AnonymousL
       ));
     } catch (err: any) {
       console.error('Error revoking link:', err);
-      alert(`Failed to revoke link: ${err.message}`);
+      setError(`Falha ao revogar link: ${err.message}`);
     } finally {
       setRevokingLinkId(null);
     }
