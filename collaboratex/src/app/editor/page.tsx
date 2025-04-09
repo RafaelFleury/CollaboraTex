@@ -3,13 +3,17 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { MonacoEditor } from '@/components/editor/MonacoEditor';
 import { useDocument } from '@/hooks/useDocument';
+import AnonymousLinkDialog from '@/components/editor/AnonymousLinkDialog';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function EditorPage() {
   const searchParams = useSearchParams();
   const documentId = searchParams.get('id');
   const router = useRouter();
+  const { user } = useAuth();
   
   // Local state for editor content
   const [editorContent, setEditorContent] = useState<string>('');
@@ -25,6 +29,9 @@ export default function EditorPage() {
     saveDocument,
     updateContent
   } = useDocument(documentId || undefined);
+  
+  // Check if current user is the owner
+  const isOwner = document?.owner_id === user?.id;
   
   // Synchronize the local state with the loaded document
   useEffect(() => {
@@ -60,10 +67,10 @@ export default function EditorPage() {
   };
   
   // Format the last saved time
-  const formatLastSaved = () => {
-    if (!lastSaved) return null;
+  const formatDate = (date: Date | null) => {
+    if (!date) return null;
     
-    return lastSaved.toLocaleTimeString('en-US', {
+    return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
@@ -73,31 +80,42 @@ export default function EditorPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <Link href="/dashboard" className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 mr-6">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-            </Link>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">{documentTitle}</h1>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            {lastSaved && (
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                Saved at {formatLastSaved()}
-              </span>
-            )}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/dashboard"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+              
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {documentTitle}
+              </h1>
+              
+              {isSaving && (
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Saving...
+                </span>
+              )}
+              {lastSaved && (
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Last saved: {formatDate(lastSaved)}
+                </span>
+              )}
+            </div>
             
-            <button
-              type="button"
-              className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
-              onClick={handleSaveDocument}
-              disabled={isSaving}
-            >
-              {isSaving ? 'Saving...' : 'Save'}
-            </button>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={handleSaveDocument}
+                disabled={isSaving}
+                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
+              >
+                {isSaving ? 'Saving...' : 'Save'}
+              </button>
+              <AnonymousLinkDialog documentId={documentId} isOwner={isOwner} />
+            </div>
           </div>
         </div>
       </header>

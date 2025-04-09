@@ -82,6 +82,20 @@ export async function middleware(req: NextRequest) {
 
     // Protected routes that require authentication
     const protectedRoutes = ['/dashboard', '/profile', '/editor'];
+    
+    // Routes that should skip authentication even if they start with a protected path
+    const publicExceptions = ['/editor/anon'];
+    
+    // Check if the current path is in our public exceptions list
+    const isPublicException = publicExceptions.some(route => 
+      pathname.startsWith(route)
+    );
+    
+    // If it's a public exception, allow access without auth
+    if (isPublicException) {
+      console.log(`[Middleware] Path ${pathname} is a public exception, allowing access`);
+      return res;
+    }
 
     // Check if the route should be protected
     const isProtectedRoute = protectedRoutes.some(route => 
