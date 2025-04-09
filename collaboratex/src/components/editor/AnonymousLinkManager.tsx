@@ -29,7 +29,7 @@ export default function AnonymousLinkManager({ documentId, isOwner }: AnonymousL
     return null;
   }
   
-  // Função para buscar links anônimos
+  // Function to fetch anonymous links
   const fetchLinks = async () => {
     try {
       setIsLoading(true);
