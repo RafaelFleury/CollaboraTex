@@ -29,30 +29,31 @@ export default function AnonymousLinkManager({ documentId, isOwner }: AnonymousL
     return null;
   }
   
+  // Função para buscar links anônimos
+  const fetchLinks = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const { data, error } = await supabase
+        .rpc('list_anonymous_links', {
+          p_document_id: documentId
+        });
+      
+      if (error) throw error;
+      
+      setLinks(data || []);
+    } catch (err: any) {
+      console.error('Error fetching anonymous links:', err);
+      setError(err.message || 'Failed to load anonymous links');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Fetch anonymous links when the component is mounted
   useEffect(() => {
     if (!documentId) return;
-    
-    const fetchLinks = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        
-        const { data, error } = await supabase
-          .rpc('list_anonymous_links', {
-            p_document_id: documentId
-          });
-        
-        if (error) throw error;
-        
-        setLinks(data || []);
-      } catch (err: any) {
-        console.error('Error fetching anonymous links:', err);
-        setError(err.message || 'Failed to load anonymous links');
-      } finally {
-        setIsLoading(false);
-      }
-    };
     
     fetchLinks();
   }, [documentId]);
