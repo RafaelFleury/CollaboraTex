@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+- Sempre escreva os códigos e comentários em inglês.
+- Fale comigo em português
+- Evite arquivos grandes. Separe em arquivos menores com diferentes funcionalidades.
+- Evite redundância de código. Priorize modularização.
+- Nunca implemente mais do que o pedido.
+- Sempre atualize o readme na raiz do projeto com as novas bibliotecas usadas cheque /docs para documentos importantes de tempos em tempos.

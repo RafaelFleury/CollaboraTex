@@ -1,0 +1,6 @@
+{
+  "snapshot": "snapshot-20250519-0e5cb6fe-ae94-43a1-87c4-5f54710e4951",
+  "install": "cd collaboratex && npm install",
+  "start": "cd collaboratex && npm run dev",
+  "terminals": []
+}

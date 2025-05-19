@@ -67,6 +67,3 @@ next-env.d.ts
 # Testing
 /coverage
 /collaboratex/coverage
-
-# Cursor
-/.cursor
